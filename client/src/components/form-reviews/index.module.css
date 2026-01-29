@@ -1,0 +1,21 @@
+.review-form-container {
+    width: 100%;
+    padding: 20px;
+    position: relative;
+}
+
+.background-image-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.background-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.review-form-card {
+    z-index: 1;
+    max-width: 100%;
+}

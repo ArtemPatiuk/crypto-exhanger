@@ -1,0 +1,59 @@
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { AssetsService } from './assets.service';
+import { CreateAssetDto, UpdateAssetDto } from './dto';
+import { RolesGuard } from '@auth/guards/role.guard';
+import { Public, Roles } from '@common/decorators';
+import { Role } from '@prisma/client';
+
+
+@Controller('assets')
+export class AssetsController {
+  constructor(private readonly assetsService: AssetsService) { }
+
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Post()
+  createAssets(@Body() dto: CreateAssetDto, @Req() req) {
+    return this.assetsService.createAsset(dto, req.user.id)
+  }
+
+  @Public()
+  @Get(':id')
+  AssetById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.assetsService.getAssetById(id)
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Put(':id')
+  updateAsset(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateAssetDto,) {
+    return this.assetsService.updateAsset(id, dto);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Delete(':id')
+  async deleteAsset(@Param('id', ParseUUIDPipe) id: string) {
+    return this.assetsService.deleteAsset(id);
+  }
+
+  @Public()
+  @Get()
+  getAll() {
+    return this.assetsService.getAllAssets();
+  }
+
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @Get('deposit-address')
+  // async getDepositAddress(@Query('coin') coin: string, @Query('network') network?: string) {
+  //   return this.assetsService.getDepositAddress(coin, network);
+  // }
+
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @Get('account')
+  // async getBinanceAccount() {
+  //   return this.assetsService.getAccountIno();
+  // }
+}

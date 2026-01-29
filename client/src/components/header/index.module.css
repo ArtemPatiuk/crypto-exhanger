@@ -1,0 +1,12 @@
+.header {
+    display: flex;
+
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background-color: #141414;
+}
+.menuContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
