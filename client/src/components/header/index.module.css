@@ -1,12 +1,92 @@
 .header {
+    background: transparent !important;
+    /* У макеті хедер прозорий, фон іде від body */
+    padding: 0 80px !important;
+    /* Великі відступи по боках як у макеті */
+    height: 80px;
     display: flex;
-
-    justify-content: space-between;
-    margin-bottom: 20px;
-    background-color: #141414;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.menuContainer {
+
+.headerContainer {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     width: 100%;
-  }
+}
+
+/* Логотип зліва */
+.logoSection {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.logoText {
+    color: #00FFA0;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+}
+
+/* Меню строго по центру */
+.menuSection {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.menuSection :global(.ant-menu) {
+    background: transparent !important;
+    border: none !important;
+    display: flex;
+    gap: 10px;
+    /* Відступи між пунктами */
+}
+
+/* Стиль посилань */
+.linkNotActive {
+    color: #ffffff !important;
+    font-weight: 400;
+    font-size: 15px;
+    transition: color 0.3s;
+}
+
+.linkActive {
+    color: #00FFA0 !important;
+    font-weight: 500;
+    position: relative;
+}
+
+/* Кнопка Sign Up справа */
+.authSection {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.signInBtn {
+    background-color: #00FFA0 !important;
+    color: #000000 !important;
+    border: none !important;
+    font-weight: 700 !important;
+    height: 44px !important;
+    padding: 0 30px !important;
+    border-radius: 50px !important;
+    /* Овальна кнопка як у Figma */
+    font-size: 15px !important;
+    box-shadow: 0 4px 15px rgba(0, 255, 160, 0.2);
+    transition: all 0.3s !important;
+}
+
+.signInBtn:hover {
+    transform: scale(1.05);
+    background-color: #33ffb3 !important;
+}
+
+/* Прибираємо сині ефекти Antd */
+.header :global(.ant-menu-item::after),
+.header :global(.ant-menu-item-selected::after) {
+    display: none !important;
+}

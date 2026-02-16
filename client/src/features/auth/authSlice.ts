@@ -7,12 +7,14 @@ interface InitialState {
     user: IUser | null;
     accessToken: string | null;
     isAuthenticated: boolean;
+    isAuthModalOpen: boolean,
 }
 
 const initialState: InitialState = {
     user: null,
     accessToken: null,
     isAuthenticated: false,
+    isAuthModalOpen: false,
 };
 
 const slice = createSlice({
@@ -25,6 +27,9 @@ const slice = createSlice({
             state.accessToken = action.payload.accessToken;
             state.isAuthenticated = true;
         },
+        setAuthModalOpen: (state, action: PayloadAction<boolean>) => {
+            state.isAuthModalOpen = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -32,21 +37,24 @@ const slice = createSlice({
                 state.user = action.payload.user;
                 state.accessToken = action.payload.accessToken;
                 state.isAuthenticated = true;
+                state.isAuthModalOpen = false;
             })
             .addMatcher(authApi.endpoints.register.matchFulfilled, (state, action) => {
                 state.user = action.payload.user;
                 state.accessToken = action.payload.accessToken;
                 state.isAuthenticated = true;
+                state.isAuthModalOpen = false;
             })
             .addMatcher(authApi.endpoints.current.matchFulfilled, (state, action) => {
                 state.user = action.payload;
                 state.isAuthenticated = true;
+                state.isAuthModalOpen = false;
             });
 
     }
 })
 
-export const { logout,refreshSuccess } = slice.actions;
+export const { logout, refreshSuccess, setAuthModalOpen } = slice.actions;
 
 export default slice.reducer;
 
@@ -55,3 +63,5 @@ export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenti
 export const selectUser = (state: RootState) => state.auth.user;
 
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
+
+export const selectIsAuthModalOpen = (state: RootState) => state.auth.isAuthModalOpen;

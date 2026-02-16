@@ -1,8 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Paths } from '../paths';
 import { Home } from '../pages/home';
-import { Login } from '../pages/login';
-import { Register } from '../pages/register';
 import { LayoutPage } from '../features/layout';
 import { RegisteredUser } from '../features/auth/registerd-outlet';
 import Reviews from '../pages/review';
@@ -29,14 +27,6 @@ export const router = createBrowserRouter([
             {
                 path:`${Paths.review}`,
                 element: <Reviews />
-            },
-            {
-                path:`${Paths.login}`,
-                element: <Login />
-            },
-            {
-                path:`${Paths.register}`,
-                element: <Register />
             },
             {
                 path:`${Paths.contacts}`,

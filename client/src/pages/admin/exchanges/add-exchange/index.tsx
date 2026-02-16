@@ -71,8 +71,7 @@ export const AddExchange = () => {
   const handleToLogin = () => {
     const btn = (
       <Space>
-        <NavLink to={Paths.register}>Зареєструватись</NavLink>
-        <NavLink to={Paths.login}>Увійти</NavLink>
+        
       </Space>
     );
     api.error({

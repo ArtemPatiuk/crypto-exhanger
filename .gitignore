@@ -1,0 +1,13 @@
+# общие
+.env
+.env.*
+*.log
+.DS_Store
+
+# node
+node_modules/
+dist/
+build/
+
+# prisma
+prisma/dev.db

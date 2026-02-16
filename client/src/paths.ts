@@ -4,8 +4,6 @@ export const Paths = {
     status: "/status",
     contacts: "/contacts",
     
-    login: "/login",
-    register: "/register",
     cabinet: "/cabinet",
     admin: "/admin",
 
@@ -20,3 +18,6 @@ export const Paths = {
     exchangeEdit:"/admin/exchanges/edit"
 
 } as const;
+
+// login: "/login",
+// register: "/register",

@@ -95,7 +95,6 @@ export const Home = () => {
           <Col xs={24} md={12}>
             <h2 style={{ fontSize: '32px', letterSpacing: '2px', fontFamily: 'Arial' }}>Ваш надійний партнер з обміну криптовалют</h2>
             <p style={{ fontSize: '20px', lineHeight: '1.5' }}>Підніміть свої інвестиції на новий рівень завдяки нашому додатку</p>
-            <Button type="primary" onClick={() => navigate(Paths.register)} block style={{ height: '50px', fontSize: '18px', marginBottom: '10px' }}>Створити аккаунт</Button>
             <Button type="primary" onClick={scrollToHowItWorks} block style={{ height: '50px', fontSize: '18px' }}>Як це працює?</Button>
           </Col>
           <Col xs={24} md={12}>

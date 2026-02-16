@@ -9,15 +9,14 @@ import { Footer } from '../../components/footer';
 
 export const LayoutPage = () => {
     return (
-        <>
-          <Header />
-        <div className={styles.main}>
-            <Layout.Content style={{ height: '100%' }}>
+        <Layout style={{ minHeight: '100vh', background: 'transparent' }}>
+            <Header />
+            <Layout.Content className={styles.main}>
                 <Outlet />
                 <FloatButton.BackTop />
             </Layout.Content>
-        </div>
-        <Footer />
-        </>
+            <Footer />
+        </Layout>
     )
 }
+
