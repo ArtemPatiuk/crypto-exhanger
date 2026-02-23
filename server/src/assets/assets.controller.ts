@@ -19,10 +19,12 @@ export class AssetsController {
     return this.assetsService.createAsset(dto, req.user.id)
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Public()
   @Get(':id')
-  AssetById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.assetsService.getAssetById(id)
+  async AssetById(@Param('id', ParseUUIDPipe) id: string) {
+    const asset = await this.assetsService.getAssetById(id)
+    return new AssetResponse(asset)
   }
 
   @UseGuards(RolesGuard)
