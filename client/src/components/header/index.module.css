@@ -1,12 +1,8 @@
 .header {
     background: transparent !important;
-    /* У макеті хедер прозорий, фон іде від body */
-    padding: 0 80px !important;
-    /* Великі відступи по боках як у макеті */
     height: 80px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .headerContainer {
@@ -30,7 +26,6 @@
     letter-spacing: -0.5px;
 }
 
-/* Меню строго по центру */
 .menuSection {
     flex: 2;
     display: flex;
@@ -40,12 +35,8 @@
 .menuSection :global(.ant-menu) {
     background: transparent !important;
     border: none !important;
-    display: flex;
-    gap: 10px;
-    /* Відступи між пунктами */
 }
 
-/* Стиль посилань */
 .linkNotActive {
     color: #ffffff !important;
     font-weight: 400;
@@ -58,8 +49,11 @@
     font-weight: 500;
     position: relative;
 }
-
-/* Кнопка Sign Up справа */
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 .authSection {
     flex: 1;
     display: flex;
@@ -74,7 +68,6 @@
     height: 44px !important;
     padding: 0 30px !important;
     border-radius: 50px !important;
-    /* Овальна кнопка як у Figma */
     font-size: 15px !important;
     box-shadow: 0 4px 15px rgba(0, 255, 160, 0.2);
     transition: all 0.3s !important;
@@ -85,6 +78,21 @@
     background-color: #33ffb3 !important;
 }
 
+.mobileMenuButton {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .menuSection,
+    .authSection {
+        display: none;
+    }
+
+    .mobileMenuButton {
+        display: block;
+    }
+}
 /* Прибираємо сині ефекти Antd */
 .header :global(.ant-menu-item::after),
 .header :global(.ant-menu-item-selected::after) {

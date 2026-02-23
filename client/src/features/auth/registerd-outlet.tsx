@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate,Outlet} from 'react-router-dom';
 import { selectIsAuthenticated } from './authSlice';
 import { selectUser } from './authSlice';
 import { LayoutPage } from '../layout';
@@ -8,9 +8,8 @@ import { useAppSelector } from '../../app/store';
 
 export const RegisteredUser = () => {
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
-    return (
-        isAuthenticated ? 
-        <LayoutPage />
-            : <Navigate to={Paths.home} replace />
-    );
-}
+
+    return isAuthenticated
+        ? <Outlet />
+        : <Navigate to={Paths.home} replace />;
+};

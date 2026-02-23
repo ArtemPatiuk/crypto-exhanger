@@ -25,63 +25,56 @@ export const router = createBrowserRouter([
                 element: <Home />
             },
             {
-                path:`${Paths.review}`,
+                path: Paths.review,
                 element: <Reviews />
             },
             {
-                path:`${Paths.contacts}`,
-                element:<ContactPage />
-            }
-        ]
-    },
-    {
-        element: <RegisteredUser />,
-        children: [
-            {
-                path:`${Paths.cabinet}`,
-                element:<Cabinet />
-            },
-            
-        ]
-    },
-    {
-        element: <AdminOutlet />,
-        children: [
-            {
-                path: `${Paths.admin}`,
-                element: <Admin />
+                path: Paths.contacts,
+                element: <ContactPage />
             },
             {
-                path:`${Paths.assetsList}`,
-                element:<ListAssets />
+                element: <RegisteredUser />,
+                children: [
+                    {
+                        path: Paths.cabinet,
+                        element: <Cabinet />
+                    }
+                ]
             },
             {
-                path:`${Paths.assetsAdd}`,
-                element:<AddAssets />
+                path: Paths.admin,
+                element: <AdminOutlet />,
+                children: [
+                    {
+                        index: true,
+                        element: <Admin />
+                    },
+                    {
+                        path: 'assets',
+                        element: <ListAssets />
+                    },
+                    {
+                        path: 'assets/add',
+                        element: <AddAssets />
+                    },
+                    {
+                        path: 'assets/:id',
+                        element: <ProfileAsset />
+                    },
+                    {
+                        path: 'assets/:id/edit',
+                        element: <EditAssets />
+                    },
+                    {
+                        path: 'exchanges',
+                        element: <ListExchanges />
+                    },
+                    {
+                        path: 'exchanges/:id',
+                        element: <ProfileExchange />
+                    }
+                ]
             },
-            {
-                path:`${Paths.assetProfile}/:id`,
-                element:<ProfileAsset />
-            },
-            {
-                path:`${Paths.assetsEdit}/:id`,
-                element:<EditAssets />
-            },
-
-            {
-                path:`${Paths.exchangesList}`,
-                element:<ListExchanges />
-            },
-            {
-                path:`${Paths.exchangeProfile}/:id`,
-                element:<ProfileExchange />
-            },
-            
-        ]
-    },
-    {
-        element: <LayoutPage />,
-        children: [
             {
                 path: '*',
                 element: <Home />

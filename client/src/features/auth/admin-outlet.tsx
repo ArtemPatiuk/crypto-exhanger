@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate,Outlet } from 'react-router-dom';
 import { LayoutPage } from '../layout';
 import { selectIsAuthenticated } from './authSlice';
 import { selectUser } from './authSlice';
@@ -10,6 +10,6 @@ export const AdminOutlet = () => {
     const user = useAppSelector(selectUser);
 
     return isAuthenticated && user?.role?.includes("ADMIN")
-        ? <LayoutPage />
+        ? <Outlet />
         : <Navigate to={Paths.home} replace />;
 };
