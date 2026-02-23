@@ -2,12 +2,12 @@ import { Button, Row, Col, notification } from 'antd';
 import { useGetAllAssetsQuery } from '../../app/services/assets';
 import { useNavigate } from 'react-router-dom';
 import { Paths } from '../../paths';
-import { AddExchange } from '../../pages/admin/exchanges/add-exchange';
-import { AdvancedRealTimeChart, TickerTape } from "react-ts-tradingview-widgets";
 import { useEffect } from 'react';
 import ContactPage from '../contacts';
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/auth/authSlice";
+import { CreateExchange } from '../admin/exchanges/add-exchange';
+import { ExchangeWidget } from '../../components/exchange-widget/ExchangeWidget';
 
 const gridStyle: React.CSSProperties = {
   width: '80%',
@@ -85,9 +85,9 @@ export const Home = () => {
       <div style={{
         padding: "0 5%"
       }}>
-        <div style={{ marginBottom: '20px', borderRadius: "30px", border: "1px solid #676A6A", boxShadow: "0 25px 50px 0 rgba(23, 22, 37, .15)", overflow: "hidden" }}>
-          <AddExchange />
-        </div>
+    
+          <ExchangeWidget />
+       
         {/* <div style={{ marginBottom: '20px' }}>
         <TickerTape colorTheme="dark" symbols={defaultSymbols} />
       </div> */}

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsUrl, IsBoolean } from 'class-validator';
 export class CreateAssetDto {
 	@IsString()
 	@IsNotEmpty()
@@ -7,23 +7,6 @@ export class CreateAssetDto {
 	@IsString()
 	@IsNotEmpty()
 	network: string;
-
-	@IsString()
-	@IsNotEmpty()
-	address: string;
-
-	@IsNumber()
-	withdrawFee: number;
-
-	@IsNumber()
-	withdrawMin: number;
-
-	@IsNumber()
-	depositDust: number;
-
-	@IsString()
-	@IsNotEmpty()
-	networkSignature: string;
 
 	@IsOptional()
 	@IsUrl()
@@ -39,3 +22,4 @@ export class UpdateAssetDto {
 	@IsString()
 	network?: string;
 }
+

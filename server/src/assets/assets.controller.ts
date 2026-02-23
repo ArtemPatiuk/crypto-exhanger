@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto, UpdateAssetDto } from './dto';
 import { RolesGuard } from '@auth/guards/role.guard';
 import { Public, Roles } from '@common/decorators';
 import { Role } from '@prisma/client';
+import { AssetResponse } from './responses/asset.response';
 
 
 @Controller('assets')
@@ -37,10 +38,13 @@ export class AssetsController {
     return this.assetsService.deleteAsset(id);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Public()
   @Get()
-  getAll() {
-    return this.assetsService.getAllAssets();
+  async getAll() {
+    const assets = await this.assetsService.getAllAssets();
+
+    return assets.map(asset => new AssetResponse(asset));
   }
 
   // @UseGuards(RolesGuard)

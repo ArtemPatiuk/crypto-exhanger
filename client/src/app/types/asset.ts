@@ -1,5 +1,5 @@
 export interface IAsset {
-    createdById: string | undefined;
+	createdById: string | undefined;
 	id: string;
 	coin: string;
 	network: string;
@@ -7,6 +7,7 @@ export interface IAsset {
 	withdrawFee: number;
 	withdrawMin: number;
 	depositDust: number;
+	isActive: boolean;
 	networkSignature: string;
-	imageUrl?: string | null;
+	imageUrl?: string;
 }

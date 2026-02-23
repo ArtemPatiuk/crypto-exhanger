@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Spot } from '@binance/connector';
 
 @Injectable()
@@ -18,6 +18,30 @@ export class BinanceService {
 
 	}
 
+	async getSpotPrice(assetFrom: string, assetTo: string) {
+		const directSymbol = `${assetFrom}${assetTo}`.toUpperCase();
+		const reversedSymbol = `${assetTo}${assetFrom}`.toUpperCase();
+
+		try {
+			const response = await this.client.tickerPrice(directSymbol);
+			return {
+				price: Number(response.data.price),
+				reversed: false,
+				symbol: directSymbol
+			}
+		} catch {
+			try {
+				const response = await this.client.tickerPrice(reversedSymbol);
+				return {
+					price: Number(response.data.price),
+					reversed: true,
+					symbol: reversedSymbol,
+				};
+			} catch {
+				throw new BadRequestException('Pair not supported on Binance');
+			}
+		}
+	}
 
 	async getAccountBalances() {
 		try {
@@ -52,6 +76,7 @@ export class BinanceService {
 		const net = coinInfo.networkList.find(n => n.network === network);
 		if (!net) return null;
 
+		//addressRegex - регулярка для активу що отримується
 		return {
 			networkSignature: net.name,
 			withdrawFee: net.withdrawFee,

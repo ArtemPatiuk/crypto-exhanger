@@ -1,12 +1,14 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
-import { CreateExchangeDto } from './dto';
+import { CreateExchangeDto, PreviewDto } from './dto';
 import { ExchangeStatus } from '@prisma/client';
 import { JwtPayload } from '@auth/interfaces';
+import { BinanceService } from 'src/binance/binance.service';
+import Decimal from 'decimal.js';
 
 @Injectable()
 export class ExchangesService {
-	constructor(private readonly prismaService: PrismaService) { }
+	constructor(private readonly prismaService: PrismaService, private readonly binanceService: BinanceService) { }
 
 	async getAll() {
 		return this.prismaService.exchangeRequest.findMany({
@@ -39,6 +41,35 @@ export class ExchangesService {
 		}
 		return exchange;
 	}
+
+	async previewExchange(dto: PreviewDto) {
+		const { assetFromSymbol, assetToSymbol, amount } = dto;
+
+		
+		
+
+		const rateData = await this.binanceService.getSpotPrice(assetFromSymbol, assetToSymbol);
+
+		let rate = new Decimal(rateData.price);
+
+		if (rateData.reversed) {
+			rate = new Decimal(1).div(rate);
+		}
+1
+		const amountDecimal = new Decimal(amount);
+
+		const receiveAmount = amountDecimal.mul(rate);
+		const serviceFee = receiveAmount.mul(0.05);
+		const finalAmountForGet = receiveAmount.minus(serviceFee);
+
+		return {
+			rate: rate.toFixed(12),
+			serviceFee: serviceFee.toFixed(8),
+			receiveAmount: finalAmountForGet.toFixed(8),
+		};
+	}
+
+
 
 	async createExchange(dto: CreateExchangeDto, userId: string) {
 		const assetFrom = await this.prismaService.asset.findUnique({

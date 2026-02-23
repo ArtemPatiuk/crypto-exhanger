@@ -1,8 +1,8 @@
-import { IAsset } from "../../app/types/asset";
+import { IAsset } from "../../../app/types/asset";
 import { Button, Card, Form, Space, Input, notification } from "antd";
-import { CustomInput } from "../custom-input";
-import { ErrorMessage } from "../error-message";
-import { ErrorValidator } from "../../utils/get-errors";
+import { CustomInput } from "../../inputs/custom-input";
+import { ErrorMessage } from "../../error-message";
+import { ErrorValidator } from "../../../utils/get-errors";
 
 type Props<T> = {
     onFinish: (value: T) => void;

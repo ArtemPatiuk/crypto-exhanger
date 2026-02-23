@@ -1,11 +1,11 @@
 
-import { Review } from "../../app/types/review";
+import { Review } from "../../../app/types/review";
 import { Button, Card, Form, Space, Input, Row, Col } from "antd";
-import { CustomInput } from "../custom-input";
-import { ErrorMessage } from "../error-message";
-import { ErrorValidator } from "../../utils/get-errors";
+import { CustomInput } from "../../inputs/custom-input";
+import { ErrorMessage } from "../../error-message";
+import { ErrorValidator } from "../../../utils/get-errors";
 import { useSelector } from 'react-redux';
-import { selectUser } from '../../features/auth/authSlice';
+import { selectUser } from '../../../features/auth/authSlice';
 import { UserOutlined } from '@ant-design/icons';
 
 
@@ -31,7 +31,7 @@ export const ReviewForm = ({
     const user = useSelector(selectUser);
 
     return (
-        <Card style={{ width: "40rem",backgroundColor:"#1f1f1f" }}>
+        <Card style={{ width: "40rem", backgroundColor: "#1f1f1f" }}>
             <Form name="review-form" onFinish={onFinish} layout="vertical" requiredMark="optional" initialValues={{ ...reviews, user: user?.email }}>
                 <Form.Item name="user" label="Ваша пошта">
                     <CustomInput name="user" readOnly prefix={<UserOutlined />} />

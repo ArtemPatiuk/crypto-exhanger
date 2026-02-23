@@ -1,9 +1,9 @@
-import { ExchangeRequest } from "../../app/types/exhangerequest";
+import { ExchangeRequest } from "../../../app/types/exhangerequest";
 import { Button, Form, Space, Spin, Row, Col, Radio, RadioChangeEvent, InputNumber, List, Input } from "antd";
-import { ErrorValidator } from "../../utils/get-errors";
-import { useGetAllAssetsQuery } from "../../app/services/assets";
+import { ErrorValidator } from "../../../utils/get-errors";
+import { useGetAllAssetsQuery } from "../../../app/services/assets";
 import { useState, useEffect } from "react";
-import useBinance from "../../app/hooks/use-binance";
+import useBinance from "../../../app/hooks/use-binance";
 import { MoneyCollectOutlined } from '@ant-design/icons';
 
 type Props<T> = {

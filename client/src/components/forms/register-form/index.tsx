@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Form, Typography, Space, Button } from "antd";
-import { CustomInput } from "../custom-input";
-import { PasswordInput } from "../password-input";
-import { useRegisterMutation } from "../../app/services/auth";
-import { ErrorValidator, getErrors } from "../../utils/get-errors";
-import { ErrorMessage } from "../error-message";
+import { CustomInput } from "../../inputs/custom-input";
+import { PasswordInput } from "../../inputs/password-input";
+import { useRegisterMutation } from "../../../app/services/auth";
+import { ErrorValidator, getErrors } from "../../../utils/get-errors";
+import { ErrorMessage } from "../../error-message";
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -27,14 +27,14 @@ interface Props {
 
 export const RegisterForm = ({ onOpenLogin, onSuccess }: Props) => {
 	const navigate = useNavigate();
-	
-	  const [registerUser, { isLoading }] = useRegisterMutation();
-	  const [errors, setErrors] = useState<ErrorValidator[]>([]);
+
+	const [registerUser, { isLoading }] = useRegisterMutation();
+	const [errors, setErrors] = useState<ErrorValidator[]>([]);
 
 	const register = async (data: RegisterData) => {
 		try {
 			await registerUser(data).unwrap()
-	
+
 			onSuccess();
 		} catch (error) {
 			setErrors(getErrors(error));

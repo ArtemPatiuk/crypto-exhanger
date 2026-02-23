@@ -1,6 +1,6 @@
 import { Row, notification } from 'antd'
 import { useEffect, useState } from 'react'
-import { ReviewForm } from '../../../components/form-reviews'
+import { ReviewForm } from '../../../components/forms/form-reviews'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../../features/auth/authSlice';

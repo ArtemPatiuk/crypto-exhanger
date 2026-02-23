@@ -1,6 +1,6 @@
 import { Row } from 'antd'
 import { useEffect, useState } from 'react'
-import { AssetForm } from '../../../../components/form-asset'
+import { AssetForm } from '../../../../components/forms/form-asset'
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../../../features/auth/authSlice';

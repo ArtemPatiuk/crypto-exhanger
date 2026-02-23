@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Req, UseGuards } from '@nestjs/common';
 import { ExchangesService } from './exchanges.service';
 import { CurrentUser, Public, Roles } from '@common/decorators';
-import { CreateExchangeDto } from './dto';
+import { CreateExchangeDto, PreviewDto } from './dto';
 import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@auth/guards/role.guard';
 import { Role } from '@prisma/client';
@@ -31,6 +31,11 @@ export class ExchangesController {
     return this.exchangesService.getExhangeById(id, user)
   }
 
+  @Post('preview')
+  preview(@Body() dto: PreviewDto) {
+    return this.exchangesService.previewExchange(dto);
+  }
+  
   @Post()
   createExchange(@Body() dto: CreateExchangeDto, @CurrentUser() user: JwtPayload) {
     return this.exchangesService.createExchange(dto, user.id)

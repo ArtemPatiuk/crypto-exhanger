@@ -8,6 +8,7 @@ interface InitialState {
     accessToken: string | null;
     isAuthenticated: boolean;
     isAuthModalOpen: boolean,
+    isExchangeModalOpen: boolean;
 }
 
 const initialState: InitialState = {
@@ -15,6 +16,7 @@ const initialState: InitialState = {
     accessToken: null,
     isAuthenticated: false,
     isAuthModalOpen: false,
+    isExchangeModalOpen: false,
 };
 
 const slice = createSlice({
@@ -29,6 +31,9 @@ const slice = createSlice({
         },
         setAuthModalOpen: (state, action: PayloadAction<boolean>) => {
             state.isAuthModalOpen = action.payload;
+        },
+        setExchangeModalOpen: (state, action: PayloadAction<boolean>) => {
+            state.isExchangeModalOpen = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -54,7 +59,7 @@ const slice = createSlice({
     }
 })
 
-export const { logout, refreshSuccess, setAuthModalOpen } = slice.actions;
+export const { logout, refreshSuccess, setAuthModalOpen, setExchangeModalOpen } = slice.actions;
 
 export default slice.reducer;
 
@@ -65,3 +70,5 @@ export const selectUser = (state: RootState) => state.auth.user;
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 
 export const selectIsAuthModalOpen = (state: RootState) => state.auth.isAuthModalOpen;
+
+export const selectIsExchangeModalOpen = (state: RootState) => state.auth.isExchangeModalOpen;

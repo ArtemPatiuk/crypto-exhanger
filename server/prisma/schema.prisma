@@ -66,10 +66,13 @@ model Asset {
   usedAsSource ExchangeRequest[] @relation("AssetFromRelation")
   usedAsTarget ExchangeRequest[] @relation("AssetToRelation")
 
+  isActive  Boolean @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("asset")
+  @@unique([coin, network])
 }
 
 model ExchangeRequest {

@@ -10,28 +10,26 @@ export class AssetsService {
 		private readonly binanceService: BinanceService
 
 	) { }
-	// async getDepositAddress(coin: string, network?: string) {
-	// 	return this.binanceService.getDepositAddress(coin, network);
-	// }
-	// async getAccountIno() {
-	// 	return this.binanceService.getAccountBalances();
-	// }
-
-	// async sendCrypto(asset: string, amount: string, address: string, network: string) {
-	// 	return this.binanceService.sendCrypto(asset, amount, address, network);
-	// }
-
 
 	async createAsset(dto: CreateAssetDto, userId: string) {
 		const binanceData = await this.binanceService.getDepositAddress(
 			dto.coin,
 			dto.network,
 		);
-
 		if (!binanceData.networkInfo) {
 			throw new ForbiddenException('Binance не надав інформації по мережі');
 		}
-
+		const existing = await this.prismaService.asset.findUnique({
+			where: {
+				coin_network: {
+					coin: dto.coin,
+					network: dto.network
+				},
+			},
+		})
+		if (existing) {
+			throw new ConflictException('Asset already exist')
+		};
 		return this.prismaService.asset.create({
 			data: {
 				coin: dto.coin,

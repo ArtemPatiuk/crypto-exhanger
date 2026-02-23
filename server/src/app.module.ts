@@ -7,17 +7,16 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 import { AssetsModule } from './assets/assets.module';
-import { BinanceService } from './binance/binance.service';
 import { ExchangesModule } from './exchanges/exchanges.module';
+import { BinanceModule } from './binance/binance.module';
 
 @Module({
-    imports: [UserModule, PrismaModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }), AssetsModule, ExchangesModule],
+    imports: [UserModule, PrismaModule, AuthModule, ConfigModule.forRoot({ isGlobal: true }), AssetsModule, ExchangesModule,BinanceModule],
     providers: [
         {
             provide: APP_GUARD,
             useClass: JwtAuthGuard,
         },
-        BinanceService,
     ],
 })
 export class AppModule { }

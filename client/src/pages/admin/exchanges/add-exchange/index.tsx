@@ -6,14 +6,14 @@ import { selectUser } from '../../../../features/auth/authSlice';
 import { Paths } from '../../../../paths';
 import { ExchangeRequest } from "../../../../app/types/exhangerequest";
 import { ErrorValidator, getErrors } from '../../../../utils/get-errors';
-import { ExchangeForm } from '../../../../components/form-exchange';
+import { ExchangeForm } from '../../../../components/forms/form-exchange';
 import { useAddExchangeMutation } from '../../../../app/services/exchanges';
 import { useGetAllAssetsQuery } from '../../../../app/services/assets';
 import { MoneyCollectOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph } = Typography;
 
-export const AddExchange = () => {
+export const CreateExchange = () => {
   const { data: assetsData, isLoading } = useGetAllAssetsQuery();
   const [errors, setError] = useState<ErrorValidator[]>([]);
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ export const AddExchange = () => {
   const handleToLogin = () => {
     const btn = (
       <Space>
-        
+
       </Space>
     );
     api.error({

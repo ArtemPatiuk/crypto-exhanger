@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ErrorValidator, getErrors } from '../../../../utils/get-errors';
 import { useEditAssetMutation, useGetAssetByIdQuery } from '../../../../app/services/assets';
 import { Row, Spin } from 'antd';
-import { AssetForm } from '../../../../components/form-asset';
+import { AssetForm } from '../../../../components/forms/form-asset';
 import { IAsset } from '../../../../app/types/asset';
 import { Paths } from '../../../../paths';
 
@@ -32,7 +32,7 @@ export const EditAssets = () => {
     }
 
     return (
-        <Row align="middle" justify="center" style={{minHeight: '67vh'}}>
+        <Row align="middle" justify="center" style={{ minHeight: '67vh' }}>
             <AssetForm
                 title="Редагувати актив"
                 btnText="Редагувати"

@@ -1,11 +1,11 @@
 // components/login-form/index.tsx
 import { Form, Typography, Space, Button } from "antd";
-import { CustomInput } from "../custom-input";
-import { PasswordInput } from "../password-input";
-import { ErrorMessage } from "../error-message";
+import { CustomInput } from "../../inputs/custom-input";
+import { PasswordInput } from "../../inputs/password-input";
+import { ErrorMessage } from "../../error-message";
 import { useState } from 'react';
-import { useLoginMutation, UserData } from "../../app/services/auth";
-import { getErrors, ErrorValidator } from "../../utils/get-errors";
+import { useLoginMutation, UserData } from "../../../app/services/auth";
+import { getErrors, ErrorValidator } from "../../../utils/get-errors";
 
 
 const { Title, Text } = Typography;

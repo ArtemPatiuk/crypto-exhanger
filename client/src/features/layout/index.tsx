@@ -10,8 +10,8 @@ import { Footer } from '../../components/footer';
 export const LayoutPage = () => {
     return (
         <Layout style={{ minHeight: '100vh', background: 'transparent' }}>
-            <Header />
             <Layout.Content className={styles.main}>
+                <Header />
                 <Outlet />
                 <FloatButton.BackTop />
             </Layout.Content>
