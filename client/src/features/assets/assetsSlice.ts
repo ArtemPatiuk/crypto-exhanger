@@ -1,11 +1,11 @@
-import { IAsset } from "../../app/types/asset";
+import { ICoin } from "../../app/types/asset";
 import { createSlice } from "@reduxjs/toolkit";
 
 import { assetsApi } from "../../app/services/assets";
 import { RootState } from "../../app/store";
 
 interface InitialState {
-    assets: IAsset[] | null
+    assets: ICoin[] | null
 }
 
 const initialState: InitialState = {

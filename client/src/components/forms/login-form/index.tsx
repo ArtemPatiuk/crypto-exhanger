@@ -1,4 +1,3 @@
-// components/login-form/index.tsx
 import { Form, Typography, Space, Button } from "antd";
 import { CustomInput } from "../../inputs/custom-input";
 import { PasswordInput } from "../../inputs/password-input";
@@ -9,8 +8,14 @@ import { getErrors, ErrorValidator } from "../../../utils/get-errors";
 
 
 const { Title, Text } = Typography;
+type Props = {
+	onOpenRegister: () => void;
+	onSuccess: () => void;
+};
 
-export const LoginForm = ({ onOpenRegister, onSuccess }: { onOpenRegister: () => void, onSuccess: () => void }) => {
+
+
+export const LoginForm = ({ onOpenRegister, onSuccess }: Props) => {
 	const [loginUser, { isLoading }] = useLoginMutation();
 	const [errors, setErrors] = useState<ErrorValidator[]>([]);
 

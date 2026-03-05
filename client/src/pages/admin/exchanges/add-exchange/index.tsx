@@ -6,7 +6,7 @@ import { selectUser } from '../../../../features/auth/authSlice';
 import { Paths } from '../../../../paths';
 import { ExchangeRequest } from "../../../../app/types/exhangerequest";
 import { ErrorValidator, getErrors } from '../../../../utils/get-errors';
-import { ExchangeForm } from '../../../../components/forms/form-exchange';
+//import { ExchangeForm } from '../../../../components/forms/form-exchange';
 import { useAddExchangeMutation } from '../../../../app/services/exchanges';
 import { useGetAllAssetsQuery } from '../../../../app/services/assets';
 import { MoneyCollectOutlined } from '@ant-design/icons';
@@ -83,7 +83,7 @@ export const CreateExchange = () => {
 
   const findAssetNameById = (id: string) => {
     const asset = assetsData?.find((asset) => asset.id === id);
-    return asset ? { name: asset.coin, imageUrl: asset.imageUrl, address: asset.address } : { name: id, imageUrl: null };
+    return asset ? { name: asset.symbol, imageUrl: asset.imageUrl, address: asset.name } : { name: id, imageUrl: null };
   };
 
   return (
@@ -91,12 +91,7 @@ export const CreateExchange = () => {
       {contextHolder}
       <Row align="middle" justify="center">
         <Col xs={24} md={24} lg={24}>
-          <ExchangeForm
-            title='Створити нову заявку'
-            btnText='Cтворити'
-            onFinish={handleAddAsset}
-            errors={errors}
-          />
+         
         </Col>
       </Row>
       <Modal

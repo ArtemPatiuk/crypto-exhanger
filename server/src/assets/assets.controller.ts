@@ -4,51 +4,71 @@ import { CreateAssetDto, UpdateAssetDto } from './dto';
 import { RolesGuard } from '@auth/guards/role.guard';
 import { Public, Roles } from '@common/decorators';
 import { Role } from '@prisma/client';
-import { AssetResponse } from './responses/asset.response';
+
 
 
 @Controller('assets')
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) { }
 
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Get('get-coins-list')
+  async getCoins() {
+    return this.assetsService.getAvailableCoins();
+  }
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Get(':symbol/networks')
+  getNetworks(@Param('symbol') symbol: string) {
+    return this.assetsService.getNetworksByCoin(symbol);
+  }
+
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @Get(':symbol/:network')
+  // getAssetInfo(
+  //   @Param('symbol') symbol: string,
+  //   @Param('network') network: string
+  // ) {
+  //   return this.assetsService.getAssetInfo(symbol, network);
+  // }
 
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  createAssets(@Body() dto: CreateAssetDto, @Req() req) {
-    return this.assetsService.createAsset(dto, req.user.id)
+  createAssets(@Body() dto: CreateAssetDto) {
+    return this.assetsService.createAsset(dto)
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @Public()
-  @Get(':id')
-  async AssetById(@Param('id', ParseUUIDPipe) id: string) {
-    const asset = await this.assetsService.getAssetById(id)
-    return new AssetResponse(asset)
-  }
+  // @UseInterceptors(ClassSerializerInterceptor)
+  // @Public()
+  // @Get(':id')
+  // async AssetById(@Param('id', ParseUUIDPipe) id: string) {
+  //   const asset = await this.assetsService.getAssetById(id)
+  //   return new AssetResponse(asset)
+  // }
 
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
-  @Put(':id')
-  updateAsset(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateAssetDto,) {
-    return this.assetsService.updateAsset(id, dto);
-  }
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
-  @Delete(':id')
-  async deleteAsset(@Param('id', ParseUUIDPipe) id: string) {
-    return this.assetsService.deleteAsset(id);
-  }
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @Put(':id')
+  // updateAsset(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateAssetDto,) {
+  //   return this.assetsService.updateAsset(id, dto);
+  // }
+  // @UseGuards(RolesGuard)
+  // @Roles(Role.ADMIN)
+  // @Delete(':id')
+  // async deleteAsset(@Param('id', ParseUUIDPipe) id: string) {
+  //   return this.assetsService.deleteAsset(id);
+  // }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Public()
   @Get()
   async getAll() {
     const assets = await this.assetsService.getAllAssets();
-
-    return assets.map(asset => new AssetResponse(asset));
+    return assets
   }
-
+  ///////////////////////////////////////////////////////////////////////////
   // @UseGuards(RolesGuard)
   // @Roles(Role.ADMIN)
   // @Get('deposit-address')

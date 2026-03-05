@@ -4,7 +4,7 @@ import { ErrorValidator, getErrors } from '../../../../utils/get-errors';
 import { useEditAssetMutation, useGetAssetByIdQuery } from '../../../../app/services/assets';
 import { Row, Spin } from 'antd';
 import { AssetForm } from '../../../../components/forms/form-asset';
-import { IAsset } from '../../../../app/types/asset';
+import {ICoin } from '../../../../app/types/asset';
 import { Paths } from '../../../../paths';
 
 export const EditAssets = () => {
@@ -17,7 +17,7 @@ export const EditAssets = () => {
     if (isLoading) {
         return <Spin size="large" />;
     }
-    const handleEditAssets = async (asset: IAsset) => {
+    const handleEditAssets = async (asset: ICoin) => {
         try {
             const editedAsset = {
                 ...data,
@@ -30,16 +30,16 @@ export const EditAssets = () => {
             setError(getErrors(error));
         }
     }
-
+    
     return (
         <Row align="middle" justify="center" style={{ minHeight: '67vh' }}>
-            <AssetForm
+            {/* <AssetForm
                 title="Редагувати актив"
                 btnText="Редагувати"
                 errors={errors}
                 asset={data}
                 onFinish={handleEditAssets}
-            />
+            /> */}
         </Row>
     )
 }

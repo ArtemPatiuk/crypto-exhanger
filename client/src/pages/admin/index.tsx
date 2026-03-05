@@ -11,7 +11,7 @@ export const Admin = () => {
 
 
   useEffect(() => {
-    if (!user) return; // ⏳ ждём
+    if (!user) return; 
 
     if (!user.role?.includes("ADMIN")) {
       navigate(Paths.home);

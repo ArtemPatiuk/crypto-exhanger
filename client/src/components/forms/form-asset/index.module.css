@@ -1,0 +1,9 @@
+
+:where(.css-dev-only-do-not-override-13gnhae).ant-input:hover {
+	border-color: #27e89a;
+	border-inline-end-width: 1px;
+}
+
+:where(.css-dev-only-do-not-override-36rf97).ant-select-single.ant-select-lg:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input:hover {
+	height: 50px;
+}

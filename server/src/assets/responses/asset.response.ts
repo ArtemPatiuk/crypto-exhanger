@@ -1,40 +1,21 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Asset } from '@prisma/client';
+import { Coin, Network } from '@prisma/client';
 
 @Exclude()
 export class AssetResponse {
-
-	@Expose()
 	id: string;
-
-	@Expose()
 	coin: string;
-
-	@Expose()
 	network: string;
-
-	@Expose()
-	address: string;
-
-	@Expose()
-	withdrawFee: number;
-
-	@Expose()
-	withdrawMin: number;
-
-	@Expose()
-	depositDust: number;
-
-	@Expose()
 	networkSignature: string;
-
-	@Expose()
-	imageUrl: string;
-
-	@Expose()
+	imageUrl?: string;
 	isActive: boolean;
 
-	constructor(partial: Partial<Asset>) {
-		Object.assign(this, partial);
+	constructor(asset: any) {
+		this.id = asset.id;
+		this.coin = asset.coin?.symbol ?? asset.coin; 
+		this.network = asset.network;
+		this.networkSignature = asset.networkSignature;
+		this.imageUrl = asset.imageUrl;
+		this.isActive = asset.isActive;
 	}
 }

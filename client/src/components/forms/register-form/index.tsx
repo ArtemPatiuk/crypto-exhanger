@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
-// Ваші типи
+
 export type RegisterData = {
 	email: string;
 	password: string;
@@ -17,7 +17,6 @@ export type RegisterData = {
 	role: any,
 	createdAt: string,
 	updatedAt: string,
-	// можно добавить name и т.д.
 };
 
 interface Props {

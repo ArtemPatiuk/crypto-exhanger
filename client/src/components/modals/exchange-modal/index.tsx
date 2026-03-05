@@ -1,12 +1,12 @@
 import { Modal, Spin } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../app/store";
 import { selectIsExchangeModalOpen, setExchangeModalOpen } from "../../../features/auth/authSlice";
-import { IAsset } from '../../../app/types';
+import { ICoin } from '../../../app/types';
 
 type Props = {
 	open: boolean;
-	assetFrom: IAsset | null;
-	assetTo: IAsset | null;
+	assetFrom: ICoin | null;
+	assetTo: ICoin | null;
 	onClose: () => void;
 };
 

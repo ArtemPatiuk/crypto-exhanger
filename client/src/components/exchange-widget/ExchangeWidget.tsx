@@ -1,24 +1,27 @@
-import { Card, Select, Button, notification, Spin,ConfigProvider } from "antd";
+import { Card, Select, Button, notification, Spin, ConfigProvider } from "antd";
 import { SwapOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useGetAllAssetsQuery } from "../../app/services/assets";
 import styles from "./index.module.css";
-import { IAsset } from "../../app/types/asset"
+import { ICoin, INetwork } from "../../app/types/asset"
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectUser, setAuthModalOpen, setExchangeModalOpen } from '../../features/auth/authSlice';
 import { ExchangeModal } from '../modals/exchange-modal';
 
+import { CoinSelect } from '../coin-select-widget/coinSelect';
+
+
 export const ExchangeWidget = () => {
-	const { data: assets, isLoading } = useGetAllAssetsQuery();
+	const { data: coins = [], isLoading } = useGetAllAssetsQuery();
 
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(selectUser);
 
+	const [assetFrom, setAssetFrom] = useState<INetwork | null>(null);
+	const [assetTo, setAssetTo] = useState<INetwork | null>(null);
 	const [isExchangeOpen, setIsExchangeOpen] = useState(false);
-	const [api, contextHolder] = notification.useNotification();
-	const [assetFrom, setAssetFrom] = useState<IAsset | null>(null);
-	const [assetTo, setAssetTo] = useState<IAsset | null>(null);
 
+	const [api, contextHolder] = notification.useNotification();
 
 	const handleSwap = () => {
 		setAssetFrom(assetTo);
@@ -27,18 +30,12 @@ export const ExchangeWidget = () => {
 
 	const handleExchangeClick = () => {
 		if (!assetFrom || !assetTo) {
-			api.warning({
-				message: "Виберіть пару для обміну",
-				description: "Будь ласка, оберіть актив для відправки та отримання",
-			});
+			api.warning({ message: "Виберіть пару" });
 			return;
 		}
 
 		if (assetFrom.id === assetTo.id) {
-			api.error({
-				message: "Помилка",
-				description: "Неможливо обміняти актив сам на себе",
-			});
+			api.error({ message: "Неможливо обміняти однакову мережу" });
 			return;
 		}
 
@@ -47,18 +44,15 @@ export const ExchangeWidget = () => {
 			return;
 		}
 
-		setIsExchangeOpen(true); // 👈 локально
+		setIsExchangeOpen(true);
 	};
-
 
 	if (isLoading) return <Spin size="large" />;
 
 	return (
 		<div className={styles.wrapper}>
 			<Card className={styles.card}>
-				<div className={styles.header}>
-					<h2 className={styles.title}>Instant Exchange</h2>
-				</div>
+				<h2 className={styles.title}>Instant Exchange</h2>
 
 				<div className={styles.row}>
 					{/* FROM */}
@@ -68,54 +62,69 @@ export const ExchangeWidget = () => {
 						className={styles.select}
 						value={assetFrom?.id}
 						optionLabelProp="label"
-						onChange={(value) => {
-							const selected = assets?.find(a => a.id === value);
-							setAssetFrom(selected || null);
+						onChange={(networkId) => {
+							for (const coin of coins) {
+								const network = coin.networks.find(
+									(n) => n.id === networkId
+								);
+								if (network) {
+									setAssetFrom(network);
+									break;
+								}
+							}
 						}}
 					>
-						{assets?.map(asset => (
-							<Select.Option
-								key={asset.id}
-								value={asset.id}
-								label={
+						{coins.flatMap((coin) =>
+							coin.networks.map((network) => (
+								<Select.Option
+									key={network.id}
+									value={network.id}
+									label={
+										<div className={styles.option}>
+											{coin.imageUrl && (
+												<img
+													src={coin.imageUrl}
+													alt={coin.symbol}
+													className={styles.coinIcon}
+												/>
+											)}
+											<div className={styles.textBlock}>
+												<div className={styles.coinName}>
+													{coin.symbol}
+												</div>
+												<div className={styles.network}>
+													{network.networkSignature}
+												</div>
+											</div>
+										</div>
+									}
+								>
 									<div className={styles.option}>
-										{asset.imageUrl && (
+										{coin.imageUrl && (
 											<img
-												src={asset.imageUrl}
-												alt={asset.coin}
+												src={coin.imageUrl}
+												alt={coin.symbol}
 												className={styles.coinIcon}
 											/>
 										)}
 										<div className={styles.textBlock}>
-											<div className={styles.coinName}>{asset.coin}</div>
+											<div className={styles.coinName}>
+												{coin.symbol}
+											</div>
 											<div className={styles.network}>
-												{asset.networkSignature}
+												{network.networkSignature}
 											</div>
 										</div>
 									</div>
-								}
-							>
-								<div className={styles.option}>
-									{asset.imageUrl && (
-										<img
-											src={asset.imageUrl}
-											alt={asset.coin}
-											className={styles.coinIcon}
-										/>
-									)}
-									<div className={styles.textBlock}>
-										<div className={styles.coinName}>{asset.coin}</div>
-										<div className={styles.network}>
-											{asset.networkSignature}
-										</div>
-									</div>
-								</div>
-							</Select.Option>
-						))}
+								</Select.Option>
+							))
+						)}
 					</Select>
 
-
-					<button className={styles.swapButton} onClick={handleSwap}>
+					<button
+						className={styles.swapButton}
+						onClick={handleSwap}
+					>
 						<SwapOutlined />
 					</button>
 
@@ -125,51 +134,64 @@ export const ExchangeWidget = () => {
 						size="large"
 						className={styles.select}
 						value={assetTo?.id}
-						onChange={(value) => {
-							const selected = assets?.find(a => a.id === value);
-							setAssetTo(selected || null);
-						}}
 						optionLabelProp="label"
+						onChange={(networkId) => {
+							for (const coin of coins) {
+								const network = coin.networks.find(
+									(n) => n.id === networkId
+								);
+								if (network) {
+									setAssetTo(network);
+									break;
+								}
+							}
+						}}
 					>
-						{assets?.map(asset => (
-							<Select.Option
-								key={asset.id}
-								value={asset.id}
-								label={
+						{coins.flatMap((coin) =>
+							coin.networks.map((network) => (
+								<Select.Option
+									key={network.id}
+									value={network.id}
+									label={
+										<div className={styles.option}>
+											{coin.imageUrl && (
+												<img
+													src={coin.imageUrl}
+													alt={coin.symbol}
+													className={styles.coinIcon}
+												/>
+											)}
+											<div className={styles.textBlock}>
+												<div className={styles.coinName}>
+													{coin.symbol}
+												</div>
+												<div className={styles.network}>
+													{network.networkSignature}
+												</div>
+											</div>
+										</div>
+									}
+								>
 									<div className={styles.option}>
-										{asset.imageUrl && (
+										{coin.imageUrl && (
 											<img
-												src={asset.imageUrl}
-												alt={asset.coin}
+												src={coin.imageUrl}
+												alt={coin.symbol}
 												className={styles.coinIcon}
 											/>
 										)}
 										<div className={styles.textBlock}>
-											<div className={styles.coinName}>{asset.coin}</div>
+											<div className={styles.coinName}>
+												{coin.symbol}
+											</div>
 											<div className={styles.network}>
-												{asset.networkSignature}
+												{network.networkSignature}
 											</div>
 										</div>
 									</div>
-								}
-							>
-								<div className={styles.option}>
-									{asset.imageUrl && (
-										<img
-											src={asset.imageUrl}
-											alt={asset.coin}
-											className={styles.coinIcon}
-										/>
-									)}
-									<div className={styles.textBlock}>
-										<div className={styles.coinName}>{asset.coin}</div>
-										<div className={styles.network}>
-											{asset.networkSignature}
-										</div>
-									</div>
-								</div>
-							</Select.Option>
-						))}
+								</Select.Option>
+							))
+						)}
 					</Select>
 
 					<Button
@@ -182,13 +204,8 @@ export const ExchangeWidget = () => {
 							? "Select pair"
 							: "Exchange"}
 					</Button>
+
 					{contextHolder}
-					<ExchangeModal
-						open={isExchangeOpen}
-						assetFrom={assetFrom}
-						assetTo={assetTo}
-						onClose={() => setIsExchangeOpen(false)}
-					/>
 				</div>
 			</Card>
 		</div>

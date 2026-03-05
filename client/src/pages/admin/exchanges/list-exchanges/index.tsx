@@ -31,14 +31,10 @@ export const ListExchanges = () => {
   const user = useSelector(selectUser);
   const [api, contextHolder] = notification.useNotification();
 
-  // useEffect(() => {
-  //   console.log('🧩 current user in Redux:', user);
-  // }, [user]);
-
 
   const findAssetNameById = (id: string) => {
     const asset = assetsData?.find((asset) => asset.id === id);
-    return asset ? { name: asset.coin, imageUrl: asset.imageUrl, address: asset.address } : { name: id, imageUrl: null };
+    return asset ? { name: asset.symbol, imageUrl: asset.imageUrl, address: asset.name } : { name: id, imageUrl: null };
   };
 
   useEffect(() => {

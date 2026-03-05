@@ -44,12 +44,7 @@ export class ExchangesService {
 
 	async previewExchange(dto: PreviewDto) {
 		const { assetFromSymbol, assetToSymbol, amount } = dto;
-
-		
-		
-
 		const rateData = await this.binanceService.getSpotPrice(assetFromSymbol, assetToSymbol);
-
 		let rate = new Decimal(rateData.price);
 
 		if (rateData.reversed) {
@@ -57,7 +52,6 @@ export class ExchangesService {
 		}
 1
 		const amountDecimal = new Decimal(amount);
-
 		const receiveAmount = amountDecimal.mul(rate);
 		const serviceFee = receiveAmount.mul(0.05);
 		const finalAmountForGet = receiveAmount.minus(serviceFee);

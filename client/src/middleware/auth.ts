@@ -9,7 +9,7 @@ listenerMidlleware.startListening({
     effect: async (action, listenerApi) => {
         if (action.payload.accessToken) {
             localStorage.setItem('token', action.payload.accessToken);
-            console.log('💾 token saved');
+            
         }
 
         // if (action.payload.user) {

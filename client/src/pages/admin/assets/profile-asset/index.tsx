@@ -50,19 +50,19 @@ export const ProfileAsset = () => {
             {contextHolder}
             <Descriptions title="Актив" bordered >
                 <Descriptions.Item label="Ім'я" span={3}>
-                    {`${data.coin}`}
+                    {`${data.symbol}`}
                 </Descriptions.Item>
                 <Descriptions.Item label="Мережа" span={3}>
-                    {`${data.network}`}
+                    {`${data.networks}`}
                 </Descriptions.Item>
                 <Descriptions.Item label="Підпис мережі" span={3}>
-                    {`${data.networkSignature}`}
+                    {`${data.networks}`}
                 </Descriptions.Item>
                 <Descriptions.Item label="Адреса для отримання" span={3}>
-                    {`${data.address}`}
+                    {`${data.symbol}`}
                 </Descriptions.Item>
             </Descriptions>
-            {user?.id === data.createdById &&
+            {
                 <>
                     <Divider orientation='left'>Дії</Divider>
                     <Space>

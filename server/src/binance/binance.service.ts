@@ -42,23 +42,14 @@ export class BinanceService {
 			}
 		}
 	}
-
-	async getAccountBalances() {
-		try {
-			const response = await this.client.signRequest('GET', '/api/v3/account');
-			return response.data;
-		} catch (error) {
-			throw new Error('Не вдалось отримати дані про аккаунт Binance');
-		}
-	}
-
-
-
 	async getCoinConfig() {
 		try {
 			const now = Date.now();
 			if (!this.coinConfigCache || now - this.lastCacheUpdate > this.CACHE_DURATION) {
-				const response = await this.client.signRequest('GET', '/sapi/v1/capital/config/getall');
+				const response = await this.client.signRequest(
+					'GET',
+					'/sapi/v1/capital/config/getall'
+				);
 				this.coinConfigCache = response.data;
 				this.lastCacheUpdate = now;
 			}
@@ -68,44 +59,102 @@ export class BinanceService {
 			throw new InternalServerErrorException('Не вдалось отримати інформацію про монети з Binance');
 		}
 	}
+	async getNetworkInfo(symbol: string, network: string) {
+		const config = await this.getCoinConfig();
 
-	getNetworkInfo(coinConfig: any[], coin: string, network: string) {
-		const coinInfo = coinConfig.find(c => c.coin === coin);
-		if (!coinInfo) return null;
+		const coin = config.find(c => c.coin === symbol);
+		if (!coin) {
+			throw new BadRequestException(`Coin ${symbol} not found on Binance`);
+		}
 
-		const net = coinInfo.networkList.find(n => n.network === network);
-		if (!net) return null;
+		const net = coin.networkList.find(n => n.network === network);
+		if (!net) {
+			throw new BadRequestException(
+				`Network ${network} not found for ${symbol}`
+			);
+		}
 
-		//addressRegex - регулярка для активу що отримується
 		return {
-			networkSignature: net.name,
-			withdrawFee: net.withdrawFee,
-			withdrawMin: net.withdrawMin,
-			depositDust: net.depositDust,
+			code: net.network,                
+			chainName: net.name,              
+			withdrawFee: Number(net.withdrawFee),
+			withdrawMin: Number(net.withdrawMin),
+			withdrawMax: Number(net.withdrawMax),
+			depositDust: Number(net.depositDust),
+			addressRegex: net.addressRegex,
+			memoRegex: net.memoRegex,
+			requiresMemo: net.withdrawTag,
+			minConfirm: net.minConfirm,
+			estimatedArrivalTime: net.estimatedArrivalTime,
+			contractAddress: net.contractAddress,
+			explorerUrl: net.contractAddressUrl, 
 		};
 	}
-
 	async getDepositAddress(coin: string, network?: string) {
 		try {
 			const options: any = {};
 			if (network) options.network = network;
 
-			const addrResponse = await this.client.depositAddress(coin, options);
-			const coinConfig = await this.getCoinConfig();
-			const networkInfo = this.getNetworkInfo(coinConfig, coin, network);
+			const response = await this.client.depositAddress(coin, options);
 
 			return {
-				...addrResponse.data,
-				networkInfo,
+				address: response.data.address,
+				memo: response.data.tag || null,
+				url: response.data.url,
 			};
 		} catch (error) {
 			throw new InternalServerErrorException(
-				error.response?.data?.msg || 'Binance error'
+				error.response?.data?.msg || 'Failed to fetch deposit address'
 			);
-			//console.error('Error fetching deposit address:', error.response?.data || error);
-			//throw new InternalServerErrorException('Не вдалось отримати адресу для депозита з Binance');
 		}
 	}
+	// async getAvailableCoins() {
+	// 	const config = await this.getCoinConfig();
+
+	// 	return config
+	// 		.filter(c => c.depositAllEnable || c.withdrawAllEnable)
+	// 		.map(c => ({
+	// 			symbol: c.coin,
+	// 			name: c.name,
+	// 		}));
+	// }
+	// async getCoinNetworks(symbol: string) {
+	// 	const config = await this.getCoinConfig();
+
+	// 	const coin = config.find(c => c.coin === symbol);
+	// 	if (!coin) {
+	// 		throw new BadRequestException('Coin not found');
+	// 	}
+
+	// 	return coin.networkList
+	// 		.filter(n => n.depositEnable || n.withdrawEnable)
+	// 		.map(n => ({
+	// 			network: n.network,
+	// 			name: n.name,
+	// 			withdrawFee: n.withdrawFee,
+	// 			withdrawMin: n.withdrawMin,
+	// 			depositDust: n.depositDust,
+	// 			minConfirm: n.minConfirm,
+	// 		}));
+	// }
+
+	// getNetworkInfo(coinConfig: any[], coin: string, network: string) {
+	// 	const coinInfo = coinConfig.find(c => c.coin === coin);
+	// 	if (!coinInfo) return null;
+
+	// 	const net = coinInfo.networkList.find(n => n.network === network);
+	// 	if (!net) return null;
+
+	// 	//addressRegex - регулярка для активу що отримується
+	// 	return {
+	// 		networkSignature: net.name,
+	// 		withdrawFee: net.withdrawFee,
+	// 		withdrawMin: net.withdrawMin,
+	// 		depositDust: net.depositDust,
+	// 	};
+	// }
+
+	
 
 	async sendCrypto(asset: string, amount: string, address: string, network: string) {
 		try {
@@ -116,4 +165,12 @@ export class BinanceService {
 			throw new InternalServerErrorException('Не вдалось відправити криптовалюту');
 		}
 	}
+	// async getAccountBalances() {
+	// 	try {
+	// 		const response = await this.client.signRequest('GET', '/api/v3/account');
+	// 		return response.data;
+	// 	} catch (error) {
+	// 		throw new Error('Не вдалось отримати дані про аккаунт Binance');
+	// 	}
+	// }
 }

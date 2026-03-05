@@ -75,10 +75,10 @@ export const ProfileExchange = () => {
         <div style={{ width: "40%", alignItems: "center", justifyContent: "center" }}>
             <Descriptions title="Заявка" bordered >
                 <Descriptions.Item label="Актив який відправляється" span={3}>
-                    {data?.assetFrom?.coin}
+                    {data?.assetFrom?.symbol}
                 </Descriptions.Item>
                 <Descriptions.Item label="Актив який отримується" span={3}>
-                    {`${data?.assetTo?.coin}`}
+                    {`${data?.assetTo?.symbol}`}
                 </Descriptions.Item>
                 <Descriptions.Item label="К-сть активів" span={3}>
                     {`${data.amount}`}
