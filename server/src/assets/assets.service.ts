@@ -41,24 +41,18 @@ export class AssetsService {
 			}));
 		const existingNetworks = coinFromDb?.networks.map(n => n.name) ?? []
 
-		return { existingNetworks, availableNetworksForSelectedCoin}
+		return { existingNetworks, availableNetworksForSelectedCoin }
 	}
 	async createAsset(dto: CreateAssetDto) {
 		return this.prismaService.$transaction(async (tx) => {
-
-			
 			const netInfo = await this.binanceService.getNetworkInfo(
 				dto.coin,
 				dto.network
 			);
-
-			
 			const deposit = await this.binanceService.getDepositAddress(
 				dto.coin,
 				dto.network
 			);
-
-			
 			const coin = await tx.coin.upsert({
 				where: { symbol: dto.coin },
 				update: {
@@ -72,7 +66,7 @@ export class AssetsService {
 				},
 			});
 
-			
+
 			const existing = await tx.network.findFirst({
 				where: {
 					coinId: coin.id,
@@ -86,7 +80,7 @@ export class AssetsService {
 				);
 			}
 
-			
+
 			return tx.network.create({
 				data: {
 					coinId: coin.id,
@@ -118,9 +112,7 @@ export class AssetsService {
 		const coins = await this.prismaService.coin.findMany({
 			where: { isActive: true },
 			include: {
-				networks: {
-					where: { isActive: true },
-				},
+				networks: true
 			},
 		});
 
@@ -141,7 +133,7 @@ export class AssetsService {
 					name: network.name,
 					chainName: network.chainName,
 					networkSignature: netInfo?.name || network.chainName,
-
+					isActive:network.isActive,
 					withdrawFee: network.withdrawFee,
 					withdrawMin: network.withdrawMin,
 					withdrawMax: network.withdrawMax,
@@ -163,70 +155,58 @@ export class AssetsService {
 			}),
 		}));
 	}
+	async getCountActiveAssets() {
+		const [allAssets, activeAssets] = await Promise.all([
+			this.prismaService.network.count(),
+			this.prismaService.network.count({ where: { isActive: true } })
+		])
+		return {
+			allAssets, activeAssets
+		}
+	}
+	async getAssetById(id: string) {
+		const asset = await this.prismaService.network.findFirst({
+			where: { id },
+			include: { coin: true }
+		});
+		if (!asset) {
+			return null;
+		}
+		return {
+			...asset,
+			withdrawFee: Number(asset.withdrawFee),
+			withdrawMin: Number(asset.withdrawMin),
+			withdrawMax: Number(asset.withdrawMax),
+			depositDust: Number(asset.depositDust)
+		};
+	}
+	async updateAsset(id: string, dto: UpdateAssetDto) {
+		try {
+			return await this.prismaService.network.update({
+				where: { id },
+				data: {
+					isActive: dto.isActive
+				}
+			});
+		} catch {
+			throw new NotFoundException('Asset not found');
+		}
+	}
+	async deleteAsset(id: string) {
+		const asset = await this.prismaService.network.findUnique({
+			where: { id },
+		});
 
-	// async getAssetById(id: string) {
-	// 	const asset = await this.prismaService.asset.findFirst({
-	// 		where: { id }
-	// 	});
-	// 	if (!asset) {
-	// 		return null;
-	// 	}
-	// 	return asset;
-	// }
-	// async updateAsset(id: string, dto: UpdateAssetDto) {
-	// 	const asset = await this.prismaService.asset.findUnique({
-	// 		where: { id },
-	// 	});
+		if (!asset) {
+			throw new NotFoundException('Asset not found');
+		}
 
-	// 	if (!asset) {
-	// 		throw new NotFoundException('Asset not found');
-	// 	}
+		await this.prismaService.network.delete({
+			where: { id },
+		});
 
-	// 	let dataToUpdate: any = { ...dto };
-
-	// 	const coin = dto.coin ?? asset.coin;
-	// 	const network = dto.network ?? asset.network;
-
-	// 	if (dto.coin || dto.network) {
-	// 		const binanceData = await this.binanceService.getDepositAddress(
-	// 			coin,
-	// 			network,
-	// 		);
-
-	// 		dataToUpdate = {
-	// 			...dataToUpdate,
-	// 			address: binanceData.address,
-	// 			networkSignature: binanceData.networkSignature,
-	// 			withdrawFee: binanceData.withdrawFee,
-	// 			withdrawMin: binanceData.withdrawMin,
-	// 			depositDust: binanceData.depositDust,
-	// 		};
-	// 	}
-
-	// 	return this.prismaService.asset.update({
-	// 		where: { id },
-	// 		data: dataToUpdate,
-	// 	});
-	// }
-	// async deleteAsset(id: string) {
-	// 	const asset = await this.prismaService.asset.findUnique({
-	// 		where: { id },
-	// 	});
-
-	// 	if (!asset) {
-	// 		throw new NotFoundException('Asset not found');
-	// 	}
-
-	// 	await this.prismaService.asset.delete({
-	// 		where: { id },
-	// 	});
-
-	// 	return {
-	// 		message: 'Asset successfully deleted',
-	// 	};
-	// }
-
-
-
-
+		return {
+			message: 'Asset successfully deleted',
+		};
+	}
 }

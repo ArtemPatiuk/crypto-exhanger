@@ -3,7 +3,6 @@ import { Button, Card, Form, Space, Input, notification, Select } from "antd";
 import { CustomInput } from "../../inputs/custom-input";
 import { ErrorMessage } from "../../error-message";
 import { ErrorValidator } from "../../../utils/get-errors";
-import { useState } from 'react';
 
 type SelectOption = {
     value: string;
@@ -79,7 +78,7 @@ export const AssetForm = ({
                     />
                 </Form.Item>
                 <CustomInput type="text" name="imageUrl" placeholder="Посилання на зображення" required={false} size="large" />
-                <Input type="text" disabled value={"https://cryptologos.cc/"} />
+                <Input type="text" disabled value={"https://www.coingecko.com/"} />
                 <Space style={{ justifyContent: "center", alignItems: "center" }}>
                     <Button htmlType="submit" style={{ marginTop: "10px" }}>
                        Створити

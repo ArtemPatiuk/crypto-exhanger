@@ -11,6 +11,8 @@ export interface INetwork {
 	chainName: string;
 	networkSignature: string;
 
+	isActive: boolean;
+
 	withdrawFee: number;
 	withdrawMin: number;
 	withdrawMax: number;
@@ -41,4 +43,23 @@ export interface AvailableNetworkByCoin {
 	}[];
 	existingNetworks: string[];
 }
-
+export interface CountAssets {
+	allAssets: number;
+	activeAssets: number;
+}
+export interface UpdateAsset {
+	id: string;
+	isActive: boolean;
+}
+export interface ProfileAsset{
+	id: string;
+	chainName: string;
+	networkSignature: string;
+	depositAddress: string;
+	isActive: boolean;
+	withdrawFee: number;
+	withdrawMin: number;
+	withdrawMax: number;
+	depositDust: number;
+	coin:ICoin
+}

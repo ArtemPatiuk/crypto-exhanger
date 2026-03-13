@@ -1,4 +1,4 @@
-import { AvailableCoin, AvailableNetworkByCoin, ICoin } from "../types/asset"
+import { AvailableCoin, AvailableNetworkByCoin, CountAssets, ICoin, INetwork, ProfileAsset, UpdateAsset } from "../types/asset"
 
 import { api } from "./api"
 
@@ -9,7 +9,8 @@ export const assetsApi = api.injectEndpoints({
             query: () => ({
                 url: "/assets",
                 method: "GET",
-            })
+            }),
+            providesTags:["Assets"]
         }),
         getListAvailableCoin: builder.query<AvailableCoin[], void>({
             query: () => ({
@@ -17,38 +18,49 @@ export const assetsApi = api.injectEndpoints({
                 method: "GET",
             })
         }),
+        getCountAssets: builder.query<CountAssets, void>({
+            query: () => ({
+                url: "/assets/get-coin-count",
+                method: "GET",
+            }),
+            providesTags: ["Assets"]
+        }),
         getListAvailableNetwork: builder.query<AvailableNetworkByCoin, string>({
             query: (name) => ({
                 url: `/assets/${name}/networks`,
                 method: "GET",
-            })
+            }),
+            providesTags: ["Assets"]
         }),
-        getAssetById: builder.query<ICoin, string>({
+        getAssetById: builder.query<ProfileAsset, string>({
             query: (id) => ({
                 url: `/assets/${id}`,
                 method: "GET",
             })
         }),
-        editAsset: builder.mutation<string, ICoin>({
+        editAsset: builder.mutation<string, UpdateAsset>({
             query: (asset) => ({
                 url: `/assets/${asset.id}`,
-                method: "PUT",
+                method: "PATCH",
                 body: asset
-            })
+            }),
+            invalidatesTags:["Assets"]
         }),
         removeAsset: builder.mutation<string, string>({
             query: (id) => ({
                 url: `/assets/${id}`,
                 method: "DELETE",
-                body: { id }
-            })
+                body: { id },              
+            }),
+            invalidatesTags: ["Assets"]
         }),
         addAsset: builder.mutation<ICoin, ICoin>({
             query: (asset) => ({
                 url: `/assets`,
                 method: "POST",
                 body: asset
-            })
+            }),
+            invalidatesTags: ["Assets"]
         }),
     })
 });
@@ -60,10 +72,11 @@ export const {
     useRemoveAssetMutation,
     useAddAssetMutation,
     useGetListAvailableCoinQuery,
-    useGetListAvailableNetworkQuery
+    useGetListAvailableNetworkQuery,
+    useGetCountAssetsQuery
 } = assetsApi;
 
 export const {
     endpoints: {
-        getAllAssets, getAssetById, editAsset, removeAsset, addAsset, getListAvailableCoin, getListAvailableNetwork
+        getAllAssets, getAssetById, editAsset, removeAsset, addAsset, getListAvailableCoin, getListAvailableNetwork, getCountAssets
     } } = assetsApi

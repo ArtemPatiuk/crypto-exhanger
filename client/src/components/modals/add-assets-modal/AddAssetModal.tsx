@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Modal, notification } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetListAvailableCoinQuery, useGetListAvailableNetworkQuery, useAddAssetMutation } from '../../../app/services/assets';
@@ -16,6 +16,7 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 
 	const navigate = useNavigate();
 	const [errors, setError] = useState<ErrorValidator[]>([]);
+	const [api, contextHolder] = notification.useNotification();
 
 	const { data: coins } = useGetListAvailableCoinQuery();
 
@@ -32,11 +33,10 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 		try {
 			await AddAssets(data).unwrap();
 
-			localStorage.setItem(
-				"createSuccessAssets",
-				"Актив успішно створено!"
-			);
-
+			api.success({
+				message: "Статус змінено",
+				description: "Новий актив успішно створено"
+			});
 			onClose();
 
 			navigate(`${Paths.admin}/assets`);
@@ -70,6 +70,7 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 				border: "1px solid rgba(255,255,255,0.15)"
 			}}
 		>
+			{contextHolder}
 			<AssetForm
 				title="Додати новий актив"
 				onFinish={handleAddAsset}
@@ -80,5 +81,6 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 				onCoinChange={setSelectedCoin}
 			/>
 		</Modal>
+		
 	);
 };

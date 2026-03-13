@@ -14,12 +14,7 @@ export class CreateAssetDto {
 }
 
 export class UpdateAssetDto {
-	@IsOptional()
-	@IsString()
-	coin?: string;
-
-	@IsOptional()
-	@IsString()
-	network?: string;
+	@IsBoolean()
+	isActive: boolean;
 }
 

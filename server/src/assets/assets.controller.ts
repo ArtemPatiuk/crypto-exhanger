@@ -23,6 +23,12 @@ export class AssetsController {
   getNetworks(@Param('symbol') symbol: string) {
     return this.assetsService.getNetworksByCoin(symbol);
   }
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Get('get-coin-count')
+  getCountAssets() {
+    return this.assetsService.getCountActiveAssets()
+  }
 
   // @UseGuards(RolesGuard)
   // @Roles(Role.ADMIN)
@@ -41,26 +47,25 @@ export class AssetsController {
     return this.assetsService.createAsset(dto)
   }
 
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // @Public()
-  // @Get(':id')
-  // async AssetById(@Param('id', ParseUUIDPipe) id: string) {
-  //   const asset = await this.assetsService.getAssetById(id)
-  //   return new AssetResponse(asset)
-  // }
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Public()
+  @Get(':id')
+  async AssetById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.assetsService.getAssetById(id)
+  }
 
-  // @UseGuards(RolesGuard)
-  // @Roles(Role.ADMIN)
-  // @Put(':id')
-  // updateAsset(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateAssetDto,) {
-  //   return this.assetsService.updateAsset(id, dto);
-  // }
-  // @UseGuards(RolesGuard)
-  // @Roles(Role.ADMIN)
-  // @Delete(':id')
-  // async deleteAsset(@Param('id', ParseUUIDPipe) id: string) {
-  //   return this.assetsService.deleteAsset(id);
-  // }
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Patch(':id')
+  updateAsset(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateAssetDto,) {
+    return this.assetsService.updateAsset(id, dto);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @Delete(':id')
+  async deleteAsset(@Param('id', ParseUUIDPipe) id: string) {
+    return this.assetsService.deleteAsset(id);
+  }
 
   @Public()
   @Get()

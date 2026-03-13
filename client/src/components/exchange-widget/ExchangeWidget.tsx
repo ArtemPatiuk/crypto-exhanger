@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectUser, setAuthModalOpen, setExchangeModalOpen } from '../../features/auth/authSlice';
 import { ExchangeModal } from '../modals/exchange-modal';
 
-import { CoinSelect } from '../coin-select-widget/coinSelect';
+
 
 
 export const ExchangeWidget = () => {
@@ -61,6 +61,7 @@ export const ExchangeWidget = () => {
 						size="large"
 						className={styles.select}
 						value={assetFrom?.id}
+						showSearch
 						optionLabelProp="label"
 						onChange={(networkId) => {
 							for (const coin of coins) {
@@ -132,6 +133,8 @@ export const ExchangeWidget = () => {
 					<Select
 						placeholder="I will receive"
 						size="large"
+						showSearch
+						optionFilterProp="label"
 						className={styles.select}
 						value={assetTo?.id}
 						optionLabelProp="label"

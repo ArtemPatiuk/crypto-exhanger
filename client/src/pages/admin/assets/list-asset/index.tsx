@@ -1,92 +1,152 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, notification, Modal } from 'antd';
+import { Button, Table, notification, Modal, Space, Tag, Typography, Card, Col, Row, Statistic } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
-import { useAddAssetMutation, useGetAllAssetsQuery, useGetListAvailableCoinQuery, useGetListAvailableNetworkQuery } from '../../../../app/services/assets';
+import { useGetAllAssetsQuery, useGetCountAssetsQuery } from '../../../../app/services/assets';
 import type { ColumnsType } from 'antd/es/table';
-import { ICoin } from '../../../../app/types/asset';
 import { useNavigate } from 'react-router-dom';
 import { Paths } from '../../../../paths';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../../../features/auth/authSlice';
-import { AssetForm } from '../../../../components/forms/form-asset';
-import { ErrorValidator, getErrors } from '../../../../utils/get-errors';
 import { AddAssetModal } from '../../../../components/modals/add-assets-modal/AddAssetModal';
+import { ProfileAssetModal } from '../../../../components/modals/profile-assets-modal/ProfileAssetModal';
 
 
+interface ListAssets {
+  id: string;
+  symbol: string;
+  name: string;
+  imageUrl?: string;
+  network: string;
+  networkSignature: string;
+  address: string;
+  isActive: boolean;
+}
 
-const colums: ColumnsType<ICoin> = [
+const columns: ColumnsType<ListAssets> = [
   {
-    title: "Ім'я",
-    dataIndex: "name",
-    key: "name",
-    render: (text, record) => (
-      <>
-        {record.imageUrl && (
-          <img
-            src={record.imageUrl}
-            alt={record.symbol}
-            style={{ width: "20px", height: "20px", marginRight: "10px" }}
-          />
-        )}
-        {text}
-      </>
+    title: "Актив",
+    key: "asset",
+    render: (_, record) => (
+      <Space>
+        <img
+          src={record.imageUrl}
+          alt={record.symbol}
+          style={{ width: 26, height: 26 }}
+        />
+        <div>
+          <div style={{ fontWeight: 600 }}>{record.symbol}</div>
+          <div style={{ fontSize: 12, opacity: 0.6 }}>
+            {record.name}
+          </div>
+        </div>
+      </Space>
     ),
   },
+
   {
     title: "Мережа",
     dataIndex: "network",
     key: "network",
+    render: (network, record) => (
+      <Space>
+        <Tag color="blue">{record.networkSignature}</Tag>
+        {network}
+      </Space>
+    ),
   },
+
   {
-    title: "Підпис мережі",
-    dataIndex: "networkSignature",
-    key: "networkSignature",
-  },
-  {
-    title: "Адреса для отримання",
+    title: "Адреса",
     dataIndex: "address",
     key: "address",
+    render: (address) => (
+      <Typography.Text copyable>
+        {address.slice(0, 10)}...{address.slice(-6)}
+      </Typography.Text>
+    ),
   },
+
   {
-    title: "Мін.сумм.вводу",
-    dataIndex: "depositDust",
-    key: "depositDust",
-    render: (text) => parseFloat(text).toFixed(8)
-  },
-  {
-    title: "Мін.сумм.виводу",
-    dataIndex: "withdrawMin",
-    key: "withdrawMin",
-  },
-  {
-    title: "Комісія мережі",
-    dataIndex: "withdrawFee",
-    key: "withdrawFee",
-  },
-]
+    title: "Статус",
+    dataIndex: "isActive",
+    key: "isActive",
+    render: (isActive: boolean) => (
+      <Tag color={isActive ? "green" : "red"}>
+        {isActive ? "Активний" : "Вимкнений"}
+      </Tag>
+    )
+  }
+];
 export const ListAssets = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenCreateAssets, setIsModalOpenCreateAssets] = useState(false);
+  const [isModalOpenProfileAssets, setIsModalOpenProfileAssets] = useState(false);
+  const [selectedAssetId, setSelectedAssetId] = useState<string>("");
 
   const { data, isLoading } = useGetAllAssetsQuery();
+  const { data: stats, isLoading: isLoadingCount } = useGetCountAssetsQuery();
 
-  const navigate = useNavigate();
+  const assets = data?.flatMap((coin) =>
+    coin.networks.map((network) => ({
+      id: network.id,
+
+      symbol: coin.symbol,
+      name: coin.name,
+      imageUrl: coin.imageUrl,
+
+      network: network.name,
+      networkSignature: network.networkSignature,
+
+      address: network.depositAddress,
+      isActive: network.isActive,
+    }))
+  ) || [];
 
   return (
     <div style={{ minHeight: "67vh" }}>
-      <Button type='primary' onClick={()=> setIsModalOpen(true)} icon={<PlusSquareOutlined />}>
-        Додати актив
-      </Button>
-      <AddAssetModal open={isModalOpen} onClose={()=> setIsModalOpen(false)} />
+      <AddAssetModal open={isModalOpenCreateAssets} onClose={() => setIsModalOpenCreateAssets(false)} />
+      <Row gutter={16} style={{ marginBottom: 24 }}>
+        <Col span={8}>
+          <Card
+            className="asset-card "
+            onClick={() => setIsModalOpenCreateAssets(true)}
+            hoverable
+          >
+            <PlusSquareOutlined style={{ fontSize: 40 }} />
+            <div>Додати актив</div>
+          </Card>
+        </Col>
+
+        <Col span={8}>
+          <Card className="asset-card">
+            <Statistic
+              title="Активні активи"
+              value={stats?.activeAssets ?? 0}
+              loading={isLoadingCount}
+            />
+          </Card>
+        </Col>
+
+        <Col span={8}>
+          <Card className="asset-card">
+            <Statistic
+              title="Всього активів"
+              value={stats?.allAssets ?? 0}
+            />
+          </Card>
+        </Col>
+      </Row>
+      <ProfileAssetModal open={isModalOpenProfileAssets} onClose={() => setIsModalOpenProfileAssets(false)} id={selectedAssetId} />
       <Table
+        columns={columns}
+        dataSource={assets}
+        rowKey="id"
         bordered
         loading={isLoading}
-        dataSource={data}
         pagination={false}
-        columns={colums}
-        rowKey={(record) => record.id}
         onRow={(record) => {
           return {
-            onClick: () => navigate(`${Paths.assetProfile}/${record.id}`)
+            onClick: () => {
+              setIsModalOpenProfileAssets(true)
+              setSelectedAssetId(record.id)
+            }
           }
         }}
       />

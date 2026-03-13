@@ -7,9 +7,6 @@ import Reviews from '../pages/review';
 import Admin from '../pages/admin';
 import { AdminOutlet } from '../features/auth/admin-outlet';
 import Cabinet from '../pages/cabinet/cabinet';
-import { AddAssets } from '../pages/admin/assets/add-asset';
-import { ProfileAsset } from '../pages/admin/assets/profile-asset';
-import { EditAssets } from '../pages/admin/assets/edit-asset';
 import {ListAssets } from '../pages/admin/assets/list-asset';
 import { ListExchanges } from '../pages/admin/exchanges/list-exchanges';
 import { ProfileExchange } from '../pages/admin/exchanges/profile-exchange';
@@ -52,18 +49,6 @@ export const router = createBrowserRouter([
                     {
                         path: 'assets',
                         element: <ListAssets />
-                    },
-                    {
-                        path: 'assets/add',
-                        element: <AddAssets />
-                    },
-                    {
-                        path: 'assets/:id',
-                        element: <ProfileAsset />
-                    },
-                    {
-                        path: 'assets/:id/edit',
-                        element: <EditAssets />
                     },
                     {
                         path: 'exchanges',
