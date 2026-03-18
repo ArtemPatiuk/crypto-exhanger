@@ -1,7 +1,9 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
-import { CreateAssetDto, UpdateAssetDto } from './dto';
+import { CreateAssetDto, GetAssetDto, UpdateAssetDto } from './dto';
 import { BinanceService } from 'src/binance/binance.service';
+import { PrismaClient } from '@prisma/client';
+import { PrismaWhereBuilder } from 'src/utils/prisma-query-builders';
 
 
 @Injectable()
@@ -108,52 +110,113 @@ export class AssetsService {
 			});
 		});
 	}
-	async getAllAssets() {
-		const coins = await this.prismaService.coin.findMany({
-			where: { isActive: true },
-			include: {
-				networks: true
-			},
-		});
+	private async getDistinctRecords(table: string, fieldName: string, includeEmpty = false): Promise<string[]> {
+		const where: any = {};
+
+		if (!includeEmpty) {
+			where[fieldName] = {
+				notIn: [''],
+				not: undefined,
+			};
+		}
+
+		const model = (this.prismaService as any)[table];
+
+		if (!model) {
+			throw new Error(`Table ${table} not found`);
+		}
+
+		try {
+			const records = await model.findMany({
+				where,
+				select: { [fieldName]: true },
+				distinct: [fieldName],
+				orderBy: { [fieldName]: 'asc' },
+			});
+
+			return records.map((item: any) => item[fieldName]);
+		} catch (error) {
+			console.error('Prisma Error Details:', error);
+			throw error;
+		}
+	}
+	async getAssetFilters() {
+		const [coins, networks] = await Promise.all([
+			this.getDistinctRecords('coin', 'symbol'),
+			this.getDistinctRecords('network', 'name'),
+		]);
+
+		return {
+			coins: coins.map(c => ({ label: c, value: c })),
+			networks: networks.map(n => ({ label: n, value: n })),
+		};
+	}
+	async getAllAssets(dto: GetAssetDto) {
+		const { page = 1, limit = 10, search, coins, networks, isActive } = dto;
+
+		const pageNum = Number(page) || 1;
+		const limitNum = Number(limit) || 10;
+		const skip = (pageNum - 1) * limitNum;
+
+		const coinWhere = new PrismaWhereBuilder()
+			.in('symbol', coins)
+			.contains(['name', 'symbol'], search)
+			.build();
+
+		const where = new PrismaWhereBuilder()
+			.in('name', networks)
+			.equals('isActive', isActive)
+			.relation('coin', coinWhere) 
+			.build();
+		const [items, total] = await Promise.all([
+			this.prismaService.network.findMany({
+				where,
+				include: { coin: true },
+				skip,
+				take: limitNum,
+				orderBy: { 
+					createdAt: 'desc',
+				},
+			}),
+			this.prismaService.network.count({ where }),
+		]);
 
 		const config = await this.binanceService.getCoinConfig();
 
-		return coins.map(coin => ({
-			id: coin.id,
-			symbol: coin.symbol,
-			name: coin.name,
-			imageUrl: coin.imageUrl,
-			networks: coin.networks.map(network => {
-				const netInfo = config
-					.find(c => c.coin === coin.symbol)
-					?.networkList.find(n => n.network === network.name);
+		const data = items.map((network) => {
+			const netInfo = config
+				.find((c) => c.coin === network.coin.symbol)
+				?.networkList.find((n) => n.network === network.name);
 
-				return {
-					id: network.id,
-					name: network.name,
-					chainName: network.chainName,
-					networkSignature: netInfo?.name || network.chainName,
-					isActive:network.isActive,
-					withdrawFee: network.withdrawFee,
-					withdrawMin: network.withdrawMin,
-					withdrawMax: network.withdrawMax,
-					depositDust: network.depositDust,
+			return {
+				id: network.id,
 
-					addressRegex: network.addressRegex,
-					memoRegex: network.memoRegex,
-					requiresMemo: network.requiresMemo,
+				symbol: network.coin.symbol,
+				name: network.coin.name,
+				imageUrl: network.coin.imageUrl,
 
-					minConfirm: network.minConfirm,
-					estimatedArrivalTime: network.estimatedArrivalTime,
+				network: network.name,
+				networkSignature: netInfo?.name || network.chainName,
 
-					contractAddress: network.contractAddress,
-					explorerUrl: network.explorerUrl,
+				withdrawFee: network.withdrawFee,
+				withdrawMin: network.withdrawMin,
+				withdrawMax: network.withdrawMax,
+				depositDust: network.depositDust,
 
-					depositAddress: network.depositAddress,
-					depositMemo: network.depositMemo,
-				};
-			}),
-		}));
+				address: network.depositAddress,
+				isActive: network.isActive,
+			};
+		});
+
+		return {
+			data,
+			meta: {
+				total,
+				page: pageNum,
+				limit: limitNum,
+				totalPage: Math.ceil(total / limitNum),
+			},
+		};
 	}
 	async getCountActiveAssets() {
 		const [allAssets, activeAssets] = await Promise.all([

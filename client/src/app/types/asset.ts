@@ -1,36 +1,39 @@
-export interface ICoin {
+import { Pagination } from './pagination';
+
+export interface IAsset {
 	id: string;
 	symbol: string;
 	name: string;
 	imageUrl?: string;
-	networks: INetwork[];
-}
-export interface INetwork {
-	id: string;
-	name: string;
-	chainName: string;
+	network: string;
 	networkSignature: string;
-
+	withdrawFee: string;
+	withdrawMin: string;
+	withdrawMax: string;
+	depositDust: string;
+	address: string;
 	isActive: boolean;
-
-	withdrawFee: number;
-	withdrawMin: number;
-	withdrawMax: number;
-	depositDust: number;
-
-	addressRegex: string;
-	memoRegex?: string;
-	requiresMemo: boolean;
-
-	minConfirm: number;
-	estimatedArrivalTime: number;
-
-	contractAddress?: string;
-	explorerUrl?: string;
-
-	depositAddress: string;
-	depositMemo?: string;
 }
+// ------
+export interface AssetFilters {
+	coins?: string[];
+	networks?: string[];
+	isActive?: boolean;
+	search?: string;
+}
+export interface GetAllAssetsRequest {
+	pagination: Pagination;
+	filters: AssetFilters;
+}
+export interface AssetFilterOption {
+	label: string;
+	value: string;
+}
+export interface AssetFiltersResponse {
+	coins: AssetFilterOption[];
+	networks: AssetFilterOption[];
+}
+// ------
 export interface AvailableCoin {
 	symbol: string;
 	name: string;
@@ -51,7 +54,7 @@ export interface UpdateAsset {
 	id: string;
 	isActive: boolean;
 }
-export interface ProfileAsset{
+export interface ProfileAsset {
 	id: string;
 	chainName: string;
 	networkSignature: string;
@@ -61,5 +64,5 @@ export interface ProfileAsset{
 	withdrawMin: number;
 	withdrawMax: number;
 	depositDust: number;
-	coin:ICoin
+	coin: IAsset
 }

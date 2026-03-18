@@ -3,7 +3,7 @@ import { SwapOutlined } from "@ant-design/icons";
 import { useMemo, useState } from "react";
 import { useGetAllAssetsQuery } from "../../app/services/assets";
 import styles from "./index.module.css";
-import { ICoin, INetwork } from "../../app/types/asset"
+import { IAsset } from "../../app/types/asset"
 import { useAppDispatch, useAppSelector } from '../../app/store';
 import { selectUser, setAuthModalOpen, setExchangeModalOpen } from '../../features/auth/authSlice';
 import { ExchangeModal } from '../modals/exchange-modal';
@@ -12,13 +12,21 @@ import { ExchangeModal } from '../modals/exchange-modal';
 
 
 export const ExchangeWidget = () => {
-	const { data: coins = [], isLoading } = useGetAllAssetsQuery();
-
+	const [filters, setFilters] = useState<{
+		coins?: string[];
+		networks?: string[];
+		isActive?: boolean;
+	}>({});
+	const { data, isLoading } = useGetAllAssetsQuery({
+		pagination: { page: 1, limit: 100 },
+		filters: { isActive: true }
+	});
+	const assets = data?.data || [];
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(selectUser);
 
-	const [assetFrom, setAssetFrom] = useState<INetwork | null>(null);
-	const [assetTo, setAssetTo] = useState<INetwork | null>(null);
+	const [assetFrom, setAssetFrom] = useState<IAsset | null>(null);
+	const [assetTo, setAssetTo] = useState<IAsset | null>(null);
 	const [isExchangeOpen, setIsExchangeOpen] = useState(false);
 
 	const [api, contextHolder] = notification.useNotification();
@@ -53,9 +61,7 @@ export const ExchangeWidget = () => {
 		<div className={styles.wrapper}>
 			<Card className={styles.card}>
 				<h2 className={styles.title}>Instant Exchange</h2>
-
 				<div className={styles.row}>
-					{/* FROM */}
 					<Select
 						placeholder="I will spend"
 						size="large"
@@ -63,63 +69,36 @@ export const ExchangeWidget = () => {
 						value={assetFrom?.id}
 						showSearch
 						optionLabelProp="label"
-						onChange={(networkId) => {
-							for (const coin of coins) {
-								const network = coin.networks.find(
-									(n) => n.id === networkId
-								);
-								if (network) {
-									setAssetFrom(network);
-									break;
-								}
-							}
+						onChange={(id) => {
+							const selected = assets.find(a => a.id === id);
+							setAssetFrom(selected || null);
 						}}
 					>
-						{coins.flatMap((coin) =>
-							coin.networks.map((network) => (
-								<Select.Option
-									key={network.id}
-									value={network.id}
-									label={
-										<div className={styles.option}>
-											{coin.imageUrl && (
-												<img
-													src={coin.imageUrl}
-													alt={coin.symbol}
-													className={styles.coinIcon}
-												/>
-											)}
-											<div className={styles.textBlock}>
-												<div className={styles.coinName}>
-													{coin.symbol}
-												</div>
-												<div className={styles.network}>
-													{network.networkSignature}
-												</div>
-											</div>
+						{assets.map((asset) => (
+							<Select.Option
+								key={asset.id}
+								value={asset.id}
+								label={`${asset.symbol} - ${asset.networkSignature}`}
+							>
+								<div className={styles.option}>
+									{asset.imageUrl && (
+										<img
+											src={asset.imageUrl}
+											alt={asset.symbol}
+											className={styles.coinIcon}
+										/>
+									)}
+									<div className={styles.textBlock}>
+										<div className={styles.coinName}>
+											{asset.symbol}
 										</div>
-									}
-								>
-									<div className={styles.option}>
-										{coin.imageUrl && (
-											<img
-												src={coin.imageUrl}
-												alt={coin.symbol}
-												className={styles.coinIcon}
-											/>
-										)}
-										<div className={styles.textBlock}>
-											<div className={styles.coinName}>
-												{coin.symbol}
-											</div>
-											<div className={styles.network}>
-												{network.networkSignature}
-											</div>
+										<div className={styles.network}>
+											{asset.networkSignature}
 										</div>
 									</div>
-								</Select.Option>
-							))
-						)}
+								</div>
+							</Select.Option>
+						))}
 					</Select>
 
 					<button
@@ -128,75 +107,44 @@ export const ExchangeWidget = () => {
 					>
 						<SwapOutlined />
 					</button>
-
-					{/* TO */}
 					<Select
 						placeholder="I will receive"
 						size="large"
 						showSearch
-						optionFilterProp="label"
 						className={styles.select}
 						value={assetTo?.id}
 						optionLabelProp="label"
-						onChange={(networkId) => {
-							for (const coin of coins) {
-								const network = coin.networks.find(
-									(n) => n.id === networkId
-								);
-								if (network) {
-									setAssetTo(network);
-									break;
-								}
-							}
+						onChange={(id) => {
+							const selected = assets.find(a => a.id === id);
+							setAssetTo(selected || null);
 						}}
 					>
-						{coins.flatMap((coin) =>
-							coin.networks.map((network) => (
-								<Select.Option
-									key={network.id}
-									value={network.id}
-									label={
-										<div className={styles.option}>
-											{coin.imageUrl && (
-												<img
-													src={coin.imageUrl}
-													alt={coin.symbol}
-													className={styles.coinIcon}
-												/>
-											)}
-											<div className={styles.textBlock}>
-												<div className={styles.coinName}>
-													{coin.symbol}
-												</div>
-												<div className={styles.network}>
-													{network.networkSignature}
-												</div>
-											</div>
+						{assets.map((asset) => (
+							<Select.Option
+								key={asset.id}
+								value={asset.id}
+								label={`${asset.symbol} - ${asset.networkSignature}`}
+							>
+								<div className={styles.option}>
+									{asset.imageUrl && (
+										<img
+											src={asset.imageUrl}
+											alt={asset.symbol}
+											className={styles.coinIcon}
+										/>
+									)}
+									<div className={styles.textBlock}>
+										<div className={styles.coinName}>
+											{asset.symbol}
 										</div>
-									}
-								>
-									<div className={styles.option}>
-										{coin.imageUrl && (
-											<img
-												src={coin.imageUrl}
-												alt={coin.symbol}
-												className={styles.coinIcon}
-											/>
-										)}
-										<div className={styles.textBlock}>
-											<div className={styles.coinName}>
-												{coin.symbol}
-											</div>
-											<div className={styles.network}>
-												{network.networkSignature}
-											</div>
+										<div className={styles.network}>
+											{asset.networkSignature}
 										</div>
 									</div>
-								</Select.Option>
-							))
-						)}
+								</div>
+							</Select.Option>
+						))}
 					</Select>
-
 					<Button
 						type="primary"
 						size="large"
@@ -207,7 +155,6 @@ export const ExchangeWidget = () => {
 							? "Select pair"
 							: "Exchange"}
 					</Button>
-
 					{contextHolder}
 				</div>
 			</Card>

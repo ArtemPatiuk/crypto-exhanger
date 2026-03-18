@@ -14,7 +14,15 @@ import { MoneyCollectOutlined } from '@ant-design/icons';
 const { Title, Paragraph } = Typography;
 
 export const CreateExchange = () => {
-  const { data: assetsData, isLoading } = useGetAllAssetsQuery();
+  const [filters, setFilters] = useState<{
+    coins?: string[];
+    networks?: string[];
+    isActive?: boolean;
+  }>({});
+  const { data: assetsData, isLoading } = useGetAllAssetsQuery({
+    pagination: { page: 1, limit: 100 }, 
+    filters: { isActive: true }
+  });
   const [errors, setError] = useState<ErrorValidator[]>([]);
   const navigate = useNavigate();
   const user = useSelector(selectUser);
@@ -80,12 +88,6 @@ export const CreateExchange = () => {
       btn,
     });
   };
-
-  const findAssetNameById = (id: string) => {
-    const asset = assetsData?.find((asset) => asset.id === id);
-    return asset ? { name: asset.symbol, imageUrl: asset.imageUrl, address: asset.name } : { name: id, imageUrl: null };
-  };
-
   return (
     <div>
       {contextHolder}
@@ -104,44 +106,6 @@ export const CreateExchange = () => {
       >
         <Title>Перед створенням заявки перевірте умови обміну!</Title>
         <Descriptions bordered>
-          <Descriptions.Item label="Актив який відправляєте" span={3}>
-            {formData?.assetFromId && (() => {
-              const { name, imageUrl } = findAssetNameById(formData.assetFromId);
-              return (
-                <>
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={name}
-                      style={{ width: "15px", height: "15px", marginRight: "10px" }}
-                    />
-                  ) : (
-                    <MoneyCollectOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
-                  )}
-                  {name}
-                </>
-              );
-            })()}
-          </Descriptions.Item>
-          <Descriptions.Item label="Актив який отримуєте" span={3}>
-            {formData?.assetToId && (() => {
-              const { name, imageUrl } = findAssetNameById(formData.assetToId);
-              return (
-                <>
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={name}
-                      style={{ width: "30px", height: "30px", marginRight: "10px" }}
-                    />
-                  ) : (
-                    <MoneyCollectOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
-                  )}
-                  {name}
-                </>
-              );
-            })()}
-          </Descriptions.Item>
           <Descriptions.Item label="К-сть активів" span={3}>
             {formData?.amount}
           </Descriptions.Item>
@@ -164,33 +128,6 @@ export const CreateExchange = () => {
         <Paragraph>Перед відправленням активів перевірте всю інформацію у заявці щодо обмінного курсу, кількості активів та адреси для отримання. Ви зможете переглянути деталі вашої заявки в особистому кабінеті.</Paragraph>
         <Paragraph >Якщо у вас є будь-які питання або потребуєте додаткової інформації, будь ласка, зв'яжіться з адміністратором за допомогою контактних даних, вказаних на сайті.</Paragraph>
         <Title level={2}>Адреса для відправлення активу</Title>
-        <Paragraph>К-сть активів для відправлення:  {formData?.amount} {formData?.assetFromId && (() => {
-          const { name, imageUrl } = findAssetNameById(formData.assetFromId);
-          return (
-            <>
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={name}
-                  style={{ width: "15px", height: "15px", marginRight: "10px" }}
-                />
-              ) : (
-                <MoneyCollectOutlined style={{ fontSize: '30px', marginRight: '10px' }} />
-              )}
-              {name}
-            </>
-          );
-        })()}</Paragraph>
-        <Paragraph copyable> {formData?.assetToId && (() => {
-          const { address } = findAssetNameById(formData.assetToId);
-          return (
-            <>
-              <QRCode value={address || '-'} />
-              {address}
-            </>
-          );
-        })()}
-        </Paragraph>
       </Modal>
     </div>
   );

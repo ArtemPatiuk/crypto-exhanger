@@ -2,7 +2,7 @@ import { Button, Row, Col, notification } from 'antd';
 import { useGetAllAssetsQuery } from '../../app/services/assets';
 import { useNavigate } from 'react-router-dom';
 import { Paths } from '../../paths';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ContactPage from '../contacts';
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/auth/authSlice";
@@ -52,8 +52,11 @@ const defaultSymbols = [
 
 //,backgroundColor:"tomato" 
 export const Home = () => {
-  const { data, isLoading } = useGetAllAssetsQuery();
-  const reversedData = data ? [...data].reverse() : [];
+
+  const { data, isLoading } = useGetAllAssetsQuery({
+    pagination: { page: 1, limit: 100 },
+    filters: { isActive: true }
+  });
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
   const user = useSelector(selectUser);

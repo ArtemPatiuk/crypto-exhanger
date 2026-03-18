@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Table, notification } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ExchangeRequest } from "../../../../app/types/exhangerequest";
@@ -24,18 +24,20 @@ const assetFilters = [
 ];
 
 export const ListExchanges = () => {
-
+const [filters, setFilters] = useState<{
+      coins?: string[];
+      networks?: string[];
+      isActive?: boolean;
+    }>({});
   const navigate = useNavigate();
   const { data, isLoading } = useGetAllExchangesQuery();
-  const { data: assetsData } = useGetAllAssetsQuery();
+  const { data: assetsData } = useGetAllAssetsQuery({
+    pagination: { page: 1, limit: 100 },
+    filters: { isActive: true }
+  });
   const user = useSelector(selectUser);
   const [api, contextHolder] = notification.useNotification();
 
-
-  const findAssetNameById = (id: string) => {
-    const asset = assetsData?.find((asset) => asset.id === id);
-    return asset ? { name: asset.symbol, imageUrl: asset.imageUrl, address: asset.name } : { name: id, imageUrl: null };
-  };
 
   useEffect(() => {
     const successRemoveExchangeMessage = localStorage.getItem('deleteSuccessExchanges');
@@ -76,40 +78,12 @@ export const ListExchanges = () => {
       dataIndex: ["assetFrom", "name"],
       key: "assetFromId",
       filters: assetFilters,
-      onFilter: (value, record) => {
-        if (!record.assetFromId) return false;
-        const asset = findAssetNameById(record.assetFromId);
-        return asset.name.includes(value as string);
-      },
-      render: (text, record) => {
-        if (!record.assetFromId) return 'N/A';
-        const { name } = findAssetNameById(record.assetFromId);
-        return (
-          <>
-            {name}
-          </>
-        );
-      },
     },
     {
       title: "Отримуєте",
       dataIndex: ["assetTo", "name"],
       key: "assetToId",
       filters: assetFilters,
-      onFilter: (value, record) => {
-        if (!record.assetToId) return false;
-        const asset = findAssetNameById(record.assetToId);
-        return asset.name.includes(value as string);
-      },
-      render: (text, record) => {
-        if (!record.assetToId) return 'N/A';
-        const { name,  } = findAssetNameById(record.assetToId);
-        return (
-          <>
-            {name}
-          </>
-        );
-      },
     },
     {
       title: "К-сть активів",

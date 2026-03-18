@@ -1,4 +1,4 @@
-import { ICoin } from './asset';
+import { IAsset } from './asset';
 
 export interface ExchangeRequest {
 	id: string;
@@ -18,8 +18,8 @@ export interface ExchangeRequest {
 
 	status: ExchangeStatus;
 
-	assetFrom: ICoin;
-	assetTo: ICoin;
+	assetFrom: IAsset;
+	assetTo: IAsset;
 
 	createdAt: string;
 }

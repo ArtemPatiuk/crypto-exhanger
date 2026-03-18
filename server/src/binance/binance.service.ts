@@ -108,53 +108,6 @@ export class BinanceService {
 			);
 		}
 	}
-	// async getAvailableCoins() {
-	// 	const config = await this.getCoinConfig();
-
-	// 	return config
-	// 		.filter(c => c.depositAllEnable || c.withdrawAllEnable)
-	// 		.map(c => ({
-	// 			symbol: c.coin,
-	// 			name: c.name,
-	// 		}));
-	// }
-	// async getCoinNetworks(symbol: string) {
-	// 	const config = await this.getCoinConfig();
-
-	// 	const coin = config.find(c => c.coin === symbol);
-	// 	if (!coin) {
-	// 		throw new BadRequestException('Coin not found');
-	// 	}
-
-	// 	return coin.networkList
-	// 		.filter(n => n.depositEnable || n.withdrawEnable)
-	// 		.map(n => ({
-	// 			network: n.network,
-	// 			name: n.name,
-	// 			withdrawFee: n.withdrawFee,
-	// 			withdrawMin: n.withdrawMin,
-	// 			depositDust: n.depositDust,
-	// 			minConfirm: n.minConfirm,
-	// 		}));
-	// }
-
-	// getNetworkInfo(coinConfig: any[], coin: string, network: string) {
-	// 	const coinInfo = coinConfig.find(c => c.coin === coin);
-	// 	if (!coinInfo) return null;
-
-	// 	const net = coinInfo.networkList.find(n => n.network === network);
-	// 	if (!net) return null;
-
-	// 	//addressRegex - регулярка для активу що отримується
-	// 	return {
-	// 		networkSignature: net.name,
-	// 		withdrawFee: net.withdrawFee,
-	// 		withdrawMin: net.withdrawMin,
-	// 		depositDust: net.depositDust,
-	// 	};
-	// }
-
-	
 
 	async sendCrypto(asset: string, amount: string, address: string, network: string) {
 		try {

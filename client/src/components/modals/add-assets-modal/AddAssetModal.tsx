@@ -2,7 +2,7 @@ import { Modal, notification } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetListAvailableCoinQuery, useGetListAvailableNetworkQuery, useAddAssetMutation } from '../../../app/services/assets';
-import { ICoin } from '../../../app/types';
+import { IAsset } from '../../../app/types';
 import { Paths } from '../../../paths';
 import { ErrorValidator, getErrors } from '../../../utils/get-errors';
 import { AssetForm } from '../../forms/form-asset';
@@ -29,7 +29,7 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 
 	const [AddAssets] = useAddAssetMutation();
 
-	const handleAddAsset = async (data: ICoin) => {
+	const handleAddAsset = async (data: IAsset) => {
 		try {
 			await AddAssets(data).unwrap();
 
@@ -81,6 +81,6 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 				onCoinChange={setSelectedCoin}
 			/>
 		</Modal>
-		
+
 	);
 };

@@ -44,6 +44,7 @@ export const ProfileAssetModal = ({ open, onClose, id }: Props) => {
 				id: data.id,
 				isActive: status
 			}).unwrap();
+			data.isActive = status;
 
 			api.success({
 				message: "Статус змінено",
@@ -76,7 +77,6 @@ export const ProfileAssetModal = ({ open, onClose, id }: Props) => {
 	return (
 		<>
 			{contextHolder}
-
 			<Modal
 				open={open}
 				onCancel={onClose}
@@ -91,7 +91,6 @@ export const ProfileAssetModal = ({ open, onClose, id }: Props) => {
 						height={40}
 						style={{ borderRadius: "50%" }}
 					/>
-
 					<div>
 						<Typography.Title level={4} style={{ margin: 0 }}>
 							{data.coin.symbol}
@@ -144,7 +143,6 @@ export const ProfileAssetModal = ({ open, onClose, id }: Props) => {
 							<Typography.Text type="secondary">
 								Комісія мережі
 							</Typography.Text>
-
 							<div
 								style={{
 									display: "flex",
@@ -212,8 +210,6 @@ export const ProfileAssetModal = ({ open, onClose, id }: Props) => {
 					</Row>
 				</Card>
 			</Modal>
-
-			{/* Модалка удаления */}
 			<Modal
 				title="Підтвердіть видалення"
 				open={deleteModalOpen}

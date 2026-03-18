@@ -1,4 +1,4 @@
-import { AvailableCoin, AvailableNetworkByCoin, ICoin } from "../../../app/types/asset";
+import { AvailableCoin, AvailableNetworkByCoin, IAsset } from "../../../app/types/asset";
 import { Button, Card, Form, Space, Input, notification, Select } from "antd";
 import { CustomInput } from "../../inputs/custom-input";
 import { ErrorMessage } from "../../error-message";
@@ -11,7 +11,7 @@ type SelectOption = {
 
 type Props = {
     title: string
-    onFinish: (value: ICoin) => void
+    onFinish: (value: IAsset) => void
     coins: AvailableCoin[]
     networks?: AvailableNetworkByCoin
     networksLoading: boolean
@@ -60,7 +60,7 @@ export const AssetForm = ({
                         onChange={(value) => {
                             onCoinChange(value);
                         }}
-                     
+
                     />
                 </Form.Item>
                 <Form.Item name="network" rules={[{ required: true }]}>
@@ -81,7 +81,7 @@ export const AssetForm = ({
                 <Input type="text" disabled value={"https://www.coingecko.com/"} />
                 <Space style={{ justifyContent: "center", alignItems: "center" }}>
                     <Button htmlType="submit" style={{ marginTop: "10px" }}>
-                       Створити
+                        Створити
                     </Button>
                 </Space>
             </Form>
@@ -89,5 +89,5 @@ export const AssetForm = ({
                 <ErrorMessage errors={errors} />
             </div>
         </>
-        )
+    )
 }

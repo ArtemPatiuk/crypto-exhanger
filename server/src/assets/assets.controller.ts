@@ -1,6 +1,6 @@
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AssetsService } from './assets.service';
-import { CreateAssetDto, UpdateAssetDto } from './dto';
+import { CreateAssetDto, GetAssetDto, UpdateAssetDto } from './dto';
 import { RolesGuard } from '@auth/guards/role.guard';
 import { Public, Roles } from '@common/decorators';
 import { Role } from '@prisma/client';
@@ -10,6 +10,16 @@ import { Role } from '@prisma/client';
 @Controller('assets')
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) { }
+  @Public()
+  @Get()
+  async getAll(@Query() dto: GetAssetDto) {
+    const assets = await this.assetsService.getAllAssets(dto);
+    return assets
+  }
+  @Get('filters')
+  async getFilters() {
+    return await this.assetsService.getAssetFilters();
+  }
 
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
@@ -23,22 +33,13 @@ export class AssetsController {
   getNetworks(@Param('symbol') symbol: string) {
     return this.assetsService.getNetworksByCoin(symbol);
   }
+
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @Get('get-coin-count')
   getCountAssets() {
     return this.assetsService.getCountActiveAssets()
   }
-
-  // @UseGuards(RolesGuard)
-  // @Roles(Role.ADMIN)
-  // @Get(':symbol/:network')
-  // getAssetInfo(
-  //   @Param('symbol') symbol: string,
-  //   @Param('network') network: string
-  // ) {
-  //   return this.assetsService.getAssetInfo(symbol, network);
-  // }
 
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
@@ -67,12 +68,6 @@ export class AssetsController {
     return this.assetsService.deleteAsset(id);
   }
 
-  @Public()
-  @Get()
-  async getAll() {
-    const assets = await this.assetsService.getAllAssets();
-    return assets
-  }
   ///////////////////////////////////////////////////////////////////////////
   // @UseGuards(RolesGuard)
   // @Roles(Role.ADMIN)
