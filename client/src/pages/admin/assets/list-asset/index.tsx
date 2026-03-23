@@ -7,6 +7,7 @@ import { AddAssetModal } from '../../../../components/modals/add-assets-modal/Ad
 import { ProfileAssetModal } from '../../../../components/modals/profile-assets-modal/ProfileAssetModal';
 import { AssetFilters, IAsset } from '../../../../app/types';
 import { Pagination } from '../../../../app/types/pagination';
+import { usePagination } from '../../../../app/hooks/use-pagination';
 
 
 interface ListAssets {
@@ -26,17 +27,21 @@ export const ListAssets = () => {
   const [isModalOpenProfileAssets, setIsModalOpenProfileAssets] = useState(false);
   const [selectedAssetId, setSelectedAssetId] = useState<string>("");
 
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    limit: 10,
-  });
+  const {
+    pagination,
+    updateDataFilters,
+    getTablePaginationConfig,
+    updatePagination,
+    getTableDataSource
+  } = usePagination({});
+
   const [assetFilters, setAssetFilters] = useState<AssetFilters>({
     coins: undefined,
     networks: undefined,
     isActive: undefined,
   });
 
-  const { data: assetsResponse, isLoading } = useGetAllAssetsQuery({
+  const { data: assetsResponse, isFetching, isLoading } = useGetAllAssetsQuery({
     pagination,
     filters: assetFilters,
   });
@@ -111,17 +116,18 @@ export const ListAssets = () => {
       ),
     },
   ];
-  const handleTableChange = (pagination: any, tableFilters: any) => {
-    setPagination({
-      page: pagination.current,
-      limit: pagination.pageSize,
-    });
+  const handleTableChange = (pagination: any, tableFilters: any, sorter: any, extra: any) => {
+    if (extra.action === 'paginate') {
+      updatePagination(pagination.current, pagination.pageSize);
+    }
 
-    setAssetFilters({
-      coins: tableFilters.coins?.length ? tableFilters.coins : undefined,
-      networks: tableFilters.networks?.length ? tableFilters.networks : undefined,
-      isActive: tableFilters.isActive?.length !== undefined ? tableFilters.isActive[0] : undefined,
-    });
+    if (extra.action === 'filter') {
+      updateDataFilters<AssetFilters>(setAssetFilters, {
+        coins: tableFilters.coins?.length ? tableFilters.coins : undefined,
+        networks: tableFilters.networks?.length ? tableFilters.networks : undefined,
+        isActive: tableFilters.isActive?.length !== undefined ? tableFilters.isActive[0] : undefined,
+      });
+    }
   };
   return (
     <div style={{ minHeight: "67vh" }}>
@@ -160,22 +166,17 @@ export const ListAssets = () => {
       <ProfileAssetModal open={isModalOpenProfileAssets} onClose={() => setIsModalOpenProfileAssets(false)} id={selectedAssetId} />
       <Table
         columns={columns}
-        dataSource={assets}
+        dataSource={getTableDataSource(isFetching, assetsResponse?.data)}
         rowKey="id"
         bordered
-        loading={isLoading}
+        loading={isLoading || isFetching}
         onRow={(record) => ({
           onClick: () => {
             setSelectedAssetId(record.id);
             setIsModalOpenProfileAssets(true);
           }
         })}
-        pagination={{
-          total: assetsResponse?.meta.total,
-          current: pagination.page,
-          pageSize: pagination.limit,
-          showSizeChanger: true,
-        }}
+        pagination={getTablePaginationConfig(assetsResponse?.meta.total)}
         onChange={handleTableChange}
       />
     </div>
