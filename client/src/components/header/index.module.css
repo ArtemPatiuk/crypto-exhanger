@@ -1,100 +1,41 @@
 .header {
-    background: transparent !important;
-    height: 80px;
+    height: 72px;
     display: flex;
     align-items: center;
+    background: transparent;
 }
 
-.headerContainer {
+.container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 24px;
 }
-
-/* Логотип зліва */
-.logoSection {
-    flex: 1;
-    display: flex;
-    align-items: center;
+:global(.ant-menu-horizontal > .ant-menu-item::after),
+:global(.ant-menu-horizontal > .ant-menu-submenu::after) {
+    display: none !important;
 }
-
-.logoText {
-    color: #00FFA0;
+.logo {
+    font-size: 20px;
     font-weight: 700;
-    font-size: 22px;
+    color: #00FFA0;
+    cursor: pointer;
     letter-spacing: -0.5px;
+    transition: opacity 0.2s;
 }
 
-.menuSection {
-    flex: 2;
-    display: flex;
-    justify-content: center;
+.logo:hover {
+    opacity: 0.8;
 }
-
-.menuSection :global(.ant-menu) {
-    background: transparent !important;
-    border: none !important;
-}
-
-.linkNotActive {
-    color: #ffffff !important;
-    font-weight: 400;
-    font-size: 15px;
-    transition: color 0.3s;
-}
-
-.linkActive {
-    color: #00FFA0 !important;
-    font-weight: 500;
-    position: relative;
-}
-.userInfo {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-.authSection {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.signInBtn {
-    background-color: #00FFA0 !important;
-    color: #000000 !important;
-    border: none !important;
-    font-weight: 700 !important;
-    height: 44px !important;
-    padding: 0 30px !important;
-    border-radius: 50px !important;
-    font-size: 15px !important;
-    box-shadow: 0 4px 15px rgba(0, 255, 160, 0.2);
-    transition: all 0.3s !important;
-}
-
-.signInBtn:hover {
-    transform: scale(1.05);
-    background-color: #33ffb3 !important;
-}
-
 .mobileMenuButton {
     display: none;
 }
 
 @media (max-width: 768px) {
-
-    .menuSection,
-    .authSection {
-        display: none;
-    }
-
     .mobileMenuButton {
         display: block;
+        font-size: 18px;
     }
-}
-/* Прибираємо сині ефекти Antd */
-.header :global(.ant-menu-item::after),
-.header :global(.ant-menu-item-selected::after) {
-    display: none !important;
 }

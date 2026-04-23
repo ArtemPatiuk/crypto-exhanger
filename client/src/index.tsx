@@ -16,18 +16,17 @@ root.render(
     <ConfigProvider
       theme={{
         algorithm: theme.darkAlgorithm,
+        token: {
+          colorPrimary: '#00FFA0',
+          colorBgContainer: 'transparent',
+        },
         components:{
-          Radio: {
-            // orange color
-            colorPrimary: "orange",
-            colorPrimaryActive: "orange",
-            colorPrimaryHover: "orange",       
-           // buttonCheckedBg:"#7F7C7C",
-                  
+          Menu: {
+            itemSelectedColor: '#00FFA0',
+            itemHoverColor: '#00FFA0',
+            horizontalItemSelectedColor: '#00FFA0',
+            horizontalItemHoverColor: '#00FFA0',
           },
-          List :{
-            colorPrimary:"green"
-          }
         }
       }
       }

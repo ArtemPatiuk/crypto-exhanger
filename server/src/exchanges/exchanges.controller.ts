@@ -11,33 +11,33 @@ import { JwtPayload } from '@auth/interfaces';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('exchanges')
 export class ExchangesController {
-  constructor(private readonly exchangesService: ExchangesService) { }
+  // constructor(private readonly exchangesService: ExchangesService) { }
 
 
-  @Roles(Role.ADMIN)
-  @Get()
-  getAll() {
-    return this.exchangesService.getAll();
-  }
+  // @Roles(Role.ADMIN)
+  // @Get()
+  // getAll() {
+  //   return this.exchangesService.getAll();
+  // }
 
-  @Get('userexchanges')
-  getExchangesByUser(@CurrentUser() user: JwtPayload) {
-    const filterUserId = user.role.includes(Role.ADMIN) ? undefined : user.id;
-    return this.exchangesService.getUserExchanges(filterUserId)
-  }
+  // @Get('userexchanges')
+  // getExchangesByUser(@CurrentUser() user: JwtPayload) {
+  //   const filterUserId = user.role.includes(Role.ADMIN) ? undefined : user.id;
+  //   return this.exchangesService.getUserExchanges(filterUserId)
+  // }
 
-  @Get(':id')
-  getExchangesProfile(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: JwtPayload) {
-    return this.exchangesService.getExhangeById(id, user)
-  }
+  // @Get(':id')
+  // getExchangesProfile(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: JwtPayload) {
+  //   return this.exchangesService.getExhangeById(id, user)
+  // }
 
-  @Post('preview')
-  preview(@Body() dto: PreviewDto) {
-    return this.exchangesService.previewExchange(dto);
-  }
+  // @Post('preview')
+  // preview(@Body() dto: PreviewDto) {
+  //   return this.exchangesService.previewExchange(dto);
+  // }
   
-  @Post()
-  createExchange(@Body() dto: CreateExchangeDto, @CurrentUser() user: JwtPayload) {
-    return this.exchangesService.createExchange(dto, user.id)
-  }
+  // @Post()
+  // createExchange(@Body() dto: CreateExchangeDto, @CurrentUser() user: JwtPayload) {
+  //   return this.exchangesService.createExchange(dto, user.id)
+  // }
 }
