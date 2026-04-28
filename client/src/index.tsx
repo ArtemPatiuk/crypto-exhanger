@@ -31,7 +31,7 @@ root.render(
             colorBgBody: '#141414',
           },
           Modal: {
-          contentBg: 'transparent', 
+          contentBg: 'rgba(15, 15, 15, 0.9)',
         },
           Menu: {
             itemSelectedColor: '#00FFA0',

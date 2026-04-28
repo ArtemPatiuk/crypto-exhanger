@@ -251,6 +251,7 @@ export class AssetsService {
 		return {
 			...asset,
 			imageUrl: this.getFullImageUrl(asset.coin.imageUrl),
+			coin: {...asset.coin,imageUrl: this.getFullImageUrl(asset.coin.imageUrl)},
 			withdrawFee: Number(asset.withdrawFee),
 			withdrawMin: Number(asset.withdrawMin),
 			withdrawMax: Number(asset.withdrawMax),

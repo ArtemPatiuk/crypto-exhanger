@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetListAvailableCoinQuery, useGetListAvailableNetworkQuery, useAddAssetMutation } from '../../../../app/services/assets';
 import { IAsset } from '../../../../app/types';
-import { AssetForm } from '../../../../components/forms/form-asset';
+import { AssetForm } from '../AddAssetForm/AddAssetForm';
 import { Paths } from '../../../../paths';
 import { ErrorValidator, getErrors } from '../../../../utils/get-errors';
 
@@ -22,10 +22,10 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 
 	const [selectedCoin, setSelectedCoin] = useState<string | null>(null);
 	const handleClose = () => {
-        setSelectedCoin(null)
-        setError([]);          
-        onClose();             
-    };
+		setSelectedCoin(null)
+		setError([]);
+		onClose();
+	};
 
 	const { data: networks, isLoading: networkLoading } =
 		useGetListAvailableNetworkQuery(selectedCoin!, {
@@ -64,17 +64,14 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 			width={600}
 			mask
 			maskClosable
-			maskStyle={{
-				backdropFilter: "blur(20px)",
-				backgroundColor: "rgba(0,0,0,0.45)"
-			}}
 			bodyStyle={{
 				padding: "30px 40px 40px 40px"
 			}}
 			style={{
+				backdropFilter: "blur(20px)",
+				backgroundColor: "rgba(15, 15, 15, 0.9)",
 				borderRadius: "30px",
 				overflow: "hidden",
-				border: "1px solid rgba(255,255,255,0.15)"
 			}}
 		>
 			{contextHolder}

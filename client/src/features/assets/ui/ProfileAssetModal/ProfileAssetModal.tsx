@@ -39,7 +39,7 @@ export const ProfileAssetModal = () => {
 			>
 				<div className={styles.modalHeader}>
 					<div className={styles.assetInfo}>
-						<img src={data.coin.imageUrl} className={styles.assetIcon} />
+						<img src={data.coin?.imageUrl} className={styles.assetIcon} />
 
 						<div>
 							<p className={styles.noMargin}>

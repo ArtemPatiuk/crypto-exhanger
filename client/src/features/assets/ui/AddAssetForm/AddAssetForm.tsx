@@ -1,10 +1,11 @@
-import { AvailableCoin, AvailableNetworkByCoin, IAsset } from "../../../app/types/asset";
-import { Button, Card, Form, Space, Input, notification, Select } from "antd";
-import { CustomInput } from "../../inputs/custom-input";
-import { ErrorMessage } from "../../error-message";
-import { ErrorValidator } from "../../../utils/get-errors";
-import { AssetImageUpload } from '../../ui/AssetImageUpload';
+import { AvailableCoin, AvailableNetworkByCoin, IAsset } from "../../../../app/types/asset";
+import { Button, Card, Form, Space, Input, notification, Select, Typography } from "antd";
+import { CustomInput } from "../../../../components/inputs/custom-input";
+import { ErrorMessage } from "../../../../components/error-message";
+import { ErrorValidator } from "../../../../utils/get-errors";
+import { AssetImageUpload } from '../../../../components/ui/AssetImageUpload';
 import { useEffect } from 'react';
+import styles from './index.module.css';
 
 type SelectOption = {
     value: string;
@@ -19,7 +20,7 @@ type Props = {
     networksLoading: boolean
     onCoinChange: (symbol: string) => void
     errors?: ErrorValidator[]
-    existingImageUrl?:string
+    existingImageUrl?: string
 }
 
 export const AssetForm = ({
@@ -36,16 +37,19 @@ export const AssetForm = ({
     const [api, contextHolder] = notification.useNotification();
 
     useEffect(() => {
-    if (!existingImageUrl && !networksLoading) {
-        form.resetFields(['imageUrl']); 
-    }
-}, [existingImageUrl, networksLoading, form]);
+        if (!existingImageUrl && !networksLoading) {
+            form.resetFields(['imageUrl']);
+        }
+    }, [existingImageUrl, networksLoading, form]);
     return (
-        <>
-            <h2 style={{ marginBottom: 20 }}>{title}</h2>
+        <div className={styles['formContainer']}>
+            <Typography.Title level={3} className={styles.formTitle}>
+                {title}
+            </Typography.Title>
             {contextHolder}
             <Form name="asset-form"
                 form={form}
+                layout="vertical"
                 onFinish={onFinish}
                 onValuesChange={(changedValues, allValues) => {
                     if (changedValues.coin) {
@@ -58,7 +62,7 @@ export const AssetForm = ({
                     <Select
                         size="large"
                         className="custom-select"
-                        placeholder="Available Coin"
+                        placeholder="Доступні монети"
                         showSearch
                         optionFilterProp="label"
                         filterSort={(optionA: SelectOption, optionB: SelectOption) =>
@@ -77,7 +81,7 @@ export const AssetForm = ({
                     <Select
                         size="large"
                         className="custom-select"
-                        placeholder="Select Network"
+                        placeholder="Виберіть мережу"
                         loading={networksLoading}
                         disabled={!networks?.availableNetworksForSelectedCoin?.length}
                         options={networks?.availableNetworksForSelectedCoin?.map(n => ({
@@ -87,22 +91,29 @@ export const AssetForm = ({
                         })) ?? []}
                     />
                 </Form.Item>
-                <Form.Item 
-                name="imageUrl" 
-                label="Іконка активу"
-                rules={[{ required: !existingImageUrl, message: 'Завантажте іконку' }]}
-            >
-                <AssetImageUpload existingUrl={existingImageUrl} />
+                <Form.Item
+                    name="imageUrl"
+                    label="Іконка активу"
+                    noStyle
+                    rules={[{ required: !existingImageUrl, message: 'Завантажте іконку' }]}
+                >
+                    <AssetImageUpload existingUrl={existingImageUrl} />
+                </Form.Item>
+                <Form.Item className={styles['submitWrapper']}>
+                <Button 
+                    type="primary" 
+                    htmlType="submit" 
+                    size="large" 
+                    block // Кнопка на всю ширину выглядит солиднее
+                    className={styles['submitBtn']}
+                >
+                    Створити актив
+                </Button>
             </Form.Item>
-                <Space style={{ justifyContent: "center", alignItems: "center" }}>
-                    <Button htmlType="submit" style={{ marginTop: "10px" }}>
-                        Створити
-                    </Button>
-                </Space>
             </Form>
             <div style={{ marginTop: "10px" }}>
                 <ErrorMessage errors={errors} />
             </div>
-        </>
+        </div>
     )
 }
