@@ -22,9 +22,9 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 
 	const [selectedCoin, setSelectedCoin] = useState<string | null>(null);
 	const handleClose = () => {
-        setSelectedCoin(null); // Очищаем выбранную монету
-        setError([]);          // Очищаем ошибки
-        onClose();             // Вызываем родительский onClose
+        setSelectedCoin(null)
+        setError([]);          
+        onClose();             
     };
 
 	const { data: networks, isLoading: networkLoading } =

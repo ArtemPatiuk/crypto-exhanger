@@ -42,7 +42,6 @@ export class FilesService {
     }
   }
 
-  // Метод для удаления (пригодится позже)
   async deleteFile(filePath: string): Promise<boolean> {
     return this.fileStorageService.deleteFile({ filePath });
   }

@@ -15,18 +15,15 @@ export const AssetImageUpload: React.FC<Props> = ({ value, onChange, existingUrl
   const [uploadImage, { isLoading }] = useUploadImageMutation();
   const [localPreview, setLocalPreview] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!value) {
-      setLocalPreview(null);
-    }
-  }, [value, existingUrl]);
+ useEffect(() => {
+    setLocalPreview(null);
+  }, [existingUrl]);
 
   const displayUrl = localPreview || existingUrl;
 
   const handleUpload = useCallback(async (options: any) => {
     const { file, onSuccess, onError } = options;
 
-    // FormData создаем только здесь
     const formData = new FormData();
     formData.append('file', file);
 
@@ -49,12 +46,8 @@ export const AssetImageUpload: React.FC<Props> = ({ value, onChange, existingUrl
       accept="image/*"
       fileList={[]}
     >
-      {displayUrl ? (
-        <img
-          src={displayUrl}
-          alt="avatar"
-          style={{ width: '100%', borderRadius: '8px', objectFit: 'contain' }}
-        />
+     {displayUrl ? (
+        <img src={displayUrl} alt="avatar" style={{ width: '100%', borderRadius: '8px' }} />
       ) : (
         <div>
           {isLoading ? <LoadingOutlined /> : <PlusOutlined />}

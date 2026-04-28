@@ -70,7 +70,9 @@ export class AssetsService {
 				where: { symbol: dto.coin },
 				update: {
 					isActive: true,
-					...(dto.imageUrl && { imageUrl: dto.imageUrl }),
+					imageUrl: dto.imageUrl?.includes('http') 
+        				? dto.imageUrl.split('/').pop()
+        				: dto.imageUrl,
 				},
 				create: {
 					symbol: dto.coin,

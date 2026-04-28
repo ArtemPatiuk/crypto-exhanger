@@ -54,6 +54,6 @@ export const selectProfileModalState = createSelector(
     [selectAssetsState],
     (assets) => ({
         isOpen: assets.isProfileModalOpen,
-        id: assets.selectedAssetId // или selectedAssetId, как он у тебя назван
+        id: assets.selectedAssetId 
     })
 );
