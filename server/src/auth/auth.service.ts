@@ -22,12 +22,25 @@ export class AuthService {
 	) { }
 
 	async refreshTokens(refreshToken: string, agent: string): Promise<Tokens> {
-		const token = await this.prismaService.token.delete({ where: { token: refreshToken } });
-		if (!token || new Date(token.exp) < new Date()) {
+		const existingToken = await this.prismaService.token.findUnique({
+			where: { token: refreshToken },
+		});
+		if (!existingToken || new Date(existingToken.exp) < new Date()) {
+			if (existingToken) {
+				await this.prismaService.token.delete({ where: { token: refreshToken } }).catch(() => { });
+			}
 			throw new UnauthorizedException();
 		}
-		const user = await this.userService.findOne(token.userId);
-		return this.generatedTokens(user, agent);
+		return this.prismaService.$transaction(async (prisma) => {
+			await prisma.token.delete({ where: { token: refreshToken } });
+
+			const user = await this.userService.findOne(existingToken.userId);
+			if (!user) {
+				throw new UnauthorizedException();
+			}
+
+			return this.generatedTokens(user, agent);
+		});
 	}
 
 	async register(dto: RegisterDto) {
@@ -71,7 +84,7 @@ export class AuthService {
 			role: user.role as ("USER" | "ADMIN")[],
 		};
 		const tokens = { accessToken, refreshToken, user: userResponse };
-	
+
 		return tokens;
 	}
 

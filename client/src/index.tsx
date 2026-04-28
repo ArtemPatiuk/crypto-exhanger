@@ -37,6 +37,8 @@ root.render(
             itemSelectedColor: '#00FFA0',
             itemHoverColor: '#00FFA0',
             horizontalLineHeight: '64px', 
+            activeBarHeight: 0,
+            activeBarBorderWidth: 0,
           },
           Table: {
             colorBgContainer: 'transparent',

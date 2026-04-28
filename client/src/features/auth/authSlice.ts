@@ -24,7 +24,7 @@ const slice = createSlice({
     initialState,
     reducers: {
         logout: () => initialState,
-        refreshSuccess: (state, action) => {
+        refreshSuccess: (state, action: PayloadAction<{ user: IUser | null; accessToken: string }>) => {
             state.user = action.payload.user;
             state.accessToken = action.payload.accessToken;
             state.isAuthenticated = true;

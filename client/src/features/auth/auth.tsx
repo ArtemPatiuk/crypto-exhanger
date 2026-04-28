@@ -3,10 +3,17 @@ import { useCurrentQuery } from "../../app/services/auth"
 
 
 export const Auth = ({ children }: { children: JSX.Element }) => {
-  const { isLoading } = useCurrentQuery();
+  const token = localStorage.getItem("token");
+  const { isLoading, isError } = useCurrentQuery(undefined, {
+    skip: !token, 
+  });
 
   if (isLoading) {
-    return <Spin />
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spin size="large" />
+      </div>
+    );
   }
 
   return children

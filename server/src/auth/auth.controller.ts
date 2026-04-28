@@ -91,9 +91,6 @@ export class AuthController {
     return req.user;
   }
 
-
-
-
   private setRefreshTokentoCookies(tokens: Tokens, res: Response) {
     if (!tokens) {
       throw new UnauthorizedException();
@@ -117,19 +114,20 @@ export class AuthController {
   @Get('google/callback')
   googleAuthCallback(@Req() req: Request, @Res() res: Response) {
     const token = req.user['accessToken']
-    return res.redirect(`http://localhost:3000/api/auth/success?token=${token}`);
+    return res.redirect(`http://my-dev-site.com:8000/api/auth/success?token=${token}`);
   }
 
   @Get('success')
-  success(@Query('token') token: string, @UserAgent() agent: string, @Res() res: Response) {
+success(@Query('token') token: string, @UserAgent() agent: string, @Res() res: Response) {
     return this.httpService
-      .get(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`)
-      .pipe(
-        mergeMap(({ data: { email } }) => this.authService.googleAuth(email, agent)),
-        map((data) => this.setRefreshTokentoCookies(data, res)),
-        handleTimeoutAndErrors()
-      );
-  }
-
-
+        .get(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`)
+        .pipe(
+            mergeMap(({ data: { email } }) => this.authService.googleAuth(email, agent)),
+            tap((data) => this.setRefreshTokentoCookies(data, res)),
+            map((data) => {
+                return res.redirect(`http://my-dev-site.com:3000/oauth-success?token=${data.accessToken}`);
+            }),
+            handleTimeoutAndErrors()
+        );
+}
 }

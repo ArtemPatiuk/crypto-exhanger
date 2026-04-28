@@ -104,7 +104,7 @@ export const AssetForm = ({
                     type="primary" 
                     htmlType="submit" 
                     size="large" 
-                    block // Кнопка на всю ширину выглядит солиднее
+                    block
                     className={styles['submitBtn']}
                 >
                     Створити актив

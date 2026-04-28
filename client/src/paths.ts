@@ -6,6 +6,7 @@ export const Paths = {
     
     cabinet: "/cabinet",
     admin: "/admin",
+    oauthSuccess: '/oauth-success',
 
     assetsList:"/admin/assets",
     assetProfile:"/admin/assets/profile",

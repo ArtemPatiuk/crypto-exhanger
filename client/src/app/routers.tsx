@@ -7,10 +7,11 @@ import Reviews from '../pages/review';
 import Admin from '../pages/admin';
 import { AdminOutlet } from '../features/auth/admin-outlet';
 import Cabinet from '../pages/cabinet/cabinet';
-import {ListAssets } from '../pages/admin/assets/ListAssets';
+import { ListAssets } from '../pages/admin/assets/ListAssets';
 import { ListExchanges } from '../pages/admin/exchanges/list-exchanges';
 import { ProfileExchange } from '../pages/admin/exchanges/profile-exchange';
 import ContactPage from '../pages/contacts';
+import { OAuthSuccess } from '../features/auth/oauth-success';
 
 
 export const router = createBrowserRouter([
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
                         element: <ProfileExchange />
                     }
                 ]
+            },
+            {
+                path: Paths.oauthSuccess,
+                element: <OAuthSuccess />
             },
             {
                 path: '*',
