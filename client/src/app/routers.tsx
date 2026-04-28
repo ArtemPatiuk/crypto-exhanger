@@ -7,7 +7,7 @@ import Reviews from '../pages/review';
 import Admin from '../pages/admin';
 import { AdminOutlet } from '../features/auth/admin-outlet';
 import Cabinet from '../pages/cabinet/cabinet';
-import {ListAssets } from '../pages/admin/assets/list-asset';
+import {ListAssets } from '../pages/admin/assets/ListAssets';
 import { ListExchanges } from '../pages/admin/exchanges/list-exchanges';
 import { ProfileExchange } from '../pages/admin/exchanges/profile-exchange';
 import ContactPage from '../pages/contacts';

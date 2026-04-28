@@ -4,16 +4,27 @@ import { CreateAssetDto, GetAssetDto, UpdateAssetDto } from './dto';
 import { BinanceService } from 'src/binance/binance.service';
 import { PrismaClient } from '@prisma/client';
 import { PrismaWhereBuilder } from 'src/utils/prisma-query-builders';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
 export class AssetsService {
 	constructor(
 		private readonly prismaService: PrismaService,
-		private readonly binanceService: BinanceService
+		private readonly binanceService: BinanceService,
+		private readonly configService: ConfigService,
 
 	) { }
 
+	private getFullImageUrl(imagePath: string | null): string | null {
+        if (!imagePath) return null;
+        
+        if (imagePath.startsWith('http')) return imagePath;
+
+		const baseUrl = this.configService.get('REACT_APP_S3_PUBLIC_URL');
+
+        return `${baseUrl}/${imagePath}`;
+    }
 	async getAvailableCoins() {
 		const config = await this.binanceService.getCoinConfig();
 
@@ -43,7 +54,7 @@ export class AssetsService {
 			}));
 		const existingNetworks = coinFromDb?.networks.map(n => n.name) ?? []
 
-		return { existingNetworks, availableNetworksForSelectedCoin }
+		return { existingNetworks, availableNetworksForSelectedCoin,imageUrl: this.getFullImageUrl(coinFromDb?.imageUrl)}
 	}
 	async createAsset(dto: CreateAssetDto) {
 		return this.prismaService.$transaction(async (tx) => {
@@ -59,7 +70,7 @@ export class AssetsService {
 				where: { symbol: dto.coin },
 				update: {
 					isActive: true,
-					imageUrl: dto.imageUrl,
+					...(dto.imageUrl && { imageUrl: dto.imageUrl }),
 				},
 				create: {
 					symbol: dto.coin,
@@ -193,7 +204,7 @@ export class AssetsService {
 
 				symbol: network.coin.symbol,
 				name: network.coin.name,
-				imageUrl: network.coin.imageUrl,
+				imageUrl: this.getFullImageUrl(network.coin.imageUrl),
 
 				network: network.name,
 				networkSignature: netInfo?.name || network.chainName,
@@ -237,6 +248,7 @@ export class AssetsService {
 		}
 		return {
 			...asset,
+			imageUrl: this.getFullImageUrl(asset.coin.imageUrl),
 			withdrawFee: Number(asset.withdrawFee),
 			withdrawMin: Number(asset.withdrawMin),
 			withdrawMax: Number(asset.withdrawMax),

@@ -1,17 +1,19 @@
-import { Modal, Typography } from 'antd';
+import { Modal } from 'antd';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/store';
-import { selectIsAuthModalOpen, selectUser, setAuthModalOpen } from '../../../features/auth/authSlice';
-import { LoginForm } from '../../forms/login-form';
-import { RegisterForm } from '../../forms/register-form';
+import { selectIsAuthModalOpen, setAuthModalOpen } from '../authSlice';
+import { LoginForm } from './LoginForm/LoginForm';
+import { RegisterForm } from './RegisterForm/RegisterForm';
 
 export const AuthModal = () => {
 	const dispatch = useAppDispatch();
 	const isOpen = useAppSelector(selectIsAuthModalOpen);
 	const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
-	const handleClose = () => dispatch(setAuthModalOpen(false));
-
+	const handleClose = () => {
+		dispatch(setAuthModalOpen(false));
+		setTimeout(() => setAuthMode('login'), 300);
+	};
 
 	return (
 		<Modal

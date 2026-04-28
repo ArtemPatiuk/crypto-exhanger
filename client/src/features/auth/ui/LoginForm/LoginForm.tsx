@@ -1,32 +1,18 @@
 import { Form, Typography, Space, Button } from "antd";
-import { CustomInput } from "../../inputs/custom-input";
-import { PasswordInput } from "../../inputs/password-input";
-import { ErrorMessage } from "../../error-message";
-import { useState } from 'react';
-import { useLoginMutation, UserData } from "../../../app/services/auth";
-import { getErrors, ErrorValidator } from "../../../utils/get-errors";
+import { CustomInput } from "../../../../components/inputs/custom-input";
+import { PasswordInput } from "../../../../components/inputs/password-input";
+import { ErrorMessage } from "../../../../components/error-message";
+import { useLoginForm } from './useLoginForm';
 
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 type Props = {
 	onOpenRegister: () => void;
 	onSuccess: () => void;
 };
 
-
-
 export const LoginForm = ({ onOpenRegister, onSuccess }: Props) => {
-	const [loginUser, { isLoading }] = useLoginMutation();
-	const [errors, setErrors] = useState<ErrorValidator[]>([]);
-
-	const onFinish = async (data: UserData) => {
-		try {
-			await loginUser(data).unwrap();
-			onSuccess();
-		} catch (error) {
-			setErrors(getErrors(error));
-		}
-	};
+	const { onFinish, isLoading, errors } = useLoginForm(onSuccess);
 
 	return (
 		<Form onFinish={onFinish} layout="vertical" style={{ marginTop: '20px' }}>
@@ -44,9 +30,9 @@ export const LoginForm = ({ onOpenRegister, onSuccess }: Props) => {
 
 			<Space className="w-100" direction="vertical" size="large" style={{ marginTop: '2rem', width: '100%', textAlign: 'center' }}>
 				<Typography.Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: '16px' }}>
-					Не маєш аккаунту?
+					Не маєш аккаунт?
 					<span onClick={onOpenRegister} style={{ color: '#00FFA0', fontWeight: 'bold', cursor: 'pointer', marginLeft: '5px' }}>
-						Sign out
+						Зареєструватись
 					</span>
 				</Typography.Text>
 				<ErrorMessage errors={errors} />

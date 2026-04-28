@@ -14,23 +14,37 @@ const root = createRoot(container);
 root.render(
   <Provider store={store}>
     <ConfigProvider
+      locale={locale}
       theme={{
         algorithm: theme.darkAlgorithm,
         token: {
           colorPrimary: '#00FFA0',
-          colorBgContainer: 'transparent',
+          colorIcon: '#00FFA0',
+          colorInfo: '#00FFA0',
+          colorBgBase: '#141414',
+          colorBgContainer: '#1c1c1c', 
+          borderRadius: 12,
+          fontFamily: 'Poppins, sans-serif',
         },
-        components:{
+        components: {
+          Layout: {
+            colorBgBody: '#141414',
+          },
+          Modal: {
+          contentBg: 'transparent', 
+        },
           Menu: {
             itemSelectedColor: '#00FFA0',
             itemHoverColor: '#00FFA0',
-            horizontalItemSelectedColor: '#00FFA0',
-            horizontalItemHoverColor: '#00FFA0',
+            horizontalLineHeight: '64px', 
           },
-        }
+          Table: {
+            colorBgContainer: 'transparent',
+            colorFillAlter: 'transparent', 
+          }
+        },
       }
-      }
-      locale={locale}
+    }
     >
       <App notification={{ placement: 'bottomRight' }}>
         <Auth>

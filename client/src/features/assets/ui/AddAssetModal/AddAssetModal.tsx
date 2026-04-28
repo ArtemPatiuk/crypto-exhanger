@@ -1,11 +1,11 @@
 import { Modal, notification } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGetListAvailableCoinQuery, useGetListAvailableNetworkQuery, useAddAssetMutation } from '../../../app/services/assets';
-import { IAsset } from '../../../app/types';
-import { Paths } from '../../../paths';
-import { ErrorValidator, getErrors } from '../../../utils/get-errors';
-import { AssetForm } from '../../forms/form-asset';
+import { useGetListAvailableCoinQuery, useGetListAvailableNetworkQuery, useAddAssetMutation } from '../../../../app/services/assets';
+import { IAsset } from '../../../../app/types';
+import { AssetForm } from '../../../../components/forms/form-asset';
+import { Paths } from '../../../../paths';
+import { ErrorValidator, getErrors } from '../../../../utils/get-errors';
 
 type Props = {
 	open: boolean;
@@ -21,16 +21,23 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 	const { data: coins } = useGetListAvailableCoinQuery();
 
 	const [selectedCoin, setSelectedCoin] = useState<string | null>(null);
+	const handleClose = () => {
+        setSelectedCoin(null); // Очищаем выбранную монету
+        setError([]);          // Очищаем ошибки
+        onClose();             // Вызываем родительский onClose
+    };
 
 	const { data: networks, isLoading: networkLoading } =
 		useGetListAvailableNetworkQuery(selectedCoin!, {
-			skip: !selectedCoin
+			skip: !selectedCoin,
+			refetchOnMountOrArgChange: true
 		});
 
 	const [AddAssets] = useAddAssetMutation();
 
-	const handleAddAsset = async (data: IAsset) => {
+	const handleAddAsset = async (data: any) => {
 		try {
+			console.log('Данные формы:', data);
 			await AddAssets(data).unwrap();
 
 			api.success({
@@ -50,7 +57,7 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 		<Modal
 			className='asset-modal'
 			open={open}
-			onCancel={onClose}
+			onCancel={handleClose}
 			footer={null}
 			centered
 			destroyOnClose
@@ -79,6 +86,7 @@ export const AddAssetModal = ({ open, onClose }: Props) => {
 				networks={networks}
 				networksLoading={networkLoading}
 				onCoinChange={setSelectedCoin}
+				existingImageUrl={networks?.imageUrl}
 			/>
 		</Modal>
 

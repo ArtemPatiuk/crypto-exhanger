@@ -1,47 +1,19 @@
-import { useState } from "react";
 import { Form, Typography, Space, Button } from "antd";
-import { CustomInput } from "../../inputs/custom-input";
-import { PasswordInput } from "../../inputs/password-input";
-import { useRegisterMutation } from "../../../app/services/auth";
-import { ErrorValidator, getErrors } from "../../../utils/get-errors";
-import { ErrorMessage } from "../../error-message";
-import { useNavigate } from 'react-router-dom';
+import { CustomInput } from "../../../../components/inputs/custom-input";
+import { PasswordInput } from "../../../../components/inputs/password-input";
+import { ErrorMessage } from "../../../../components/error-message";
+import { useRegisterForm } from './useRegisterForm';
 
 const { Title, Text } = Typography;
-
-
-export type RegisterData = {
-	email: string;
-	password: string;
-	name: string;
-	role: any,
-	createdAt: string,
-	updatedAt: string,
-};
-
 interface Props {
 	onOpenLogin: () => void;
 	onSuccess: () => void;
 }
-
 export const RegisterForm = ({ onOpenLogin, onSuccess }: Props) => {
-	const navigate = useNavigate();
-
-	const [registerUser, { isLoading }] = useRegisterMutation();
-	const [errors, setErrors] = useState<ErrorValidator[]>([]);
-
-	const register = async (data: RegisterData) => {
-		try {
-			await registerUser(data).unwrap()
-
-			onSuccess();
-		} catch (error) {
-			setErrors(getErrors(error));
-		}
-	}
+	const { onFinish, isLoading, errors } = useRegisterForm(onSuccess);
 
 	return (
-		<Form onFinish={register} layout="vertical">
+		<Form onFinish={onFinish} layout="vertical">
 			<Title level={2} style={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>
 				Реєстрація
 			</Title>

@@ -19,7 +19,7 @@ export const AuthSection = () => {
 	if (!user) {
 		return (
 			<Button type="primary" onClick={() => dispatch(setAuthModalOpen(true))}>
-				Sign In
+				Увійти
 			</Button>
 		);
 	}

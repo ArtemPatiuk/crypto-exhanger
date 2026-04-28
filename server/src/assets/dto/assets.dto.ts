@@ -11,7 +11,7 @@ export class CreateAssetDto {
 	network: string;
 
 	@IsOptional()
-	@IsUrl()
+	@IsString()
 	imageUrl?: string;
 }
 

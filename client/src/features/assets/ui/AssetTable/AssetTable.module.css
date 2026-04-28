@@ -1,0 +1,19 @@
+.customTable .ant-table {
+	background: transparent;
+}
+.customTable .ant-table-thead>tr>th {
+	background: rgba(255, 255, 255, 0.03);
+	color: rgba(255, 255, 255, 0.6);
+	font-weight: 500;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.customTable .ant-table-tbody>tr>td {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	background: rgba(255, 255, 255, 0.03);
+}
+
+.customTable .ant-table-tbody>tr:hover>td {
+	background: rgba(255, 255, 255, 0.03);
+	cursor: pointer;
+}

@@ -3,6 +3,8 @@ import { Button, Card, Form, Space, Input, notification, Select } from "antd";
 import { CustomInput } from "../../inputs/custom-input";
 import { ErrorMessage } from "../../error-message";
 import { ErrorValidator } from "../../../utils/get-errors";
+import { AssetImageUpload } from '../../ui/AssetImageUpload';
+import { useEffect } from 'react';
 
 type SelectOption = {
     value: string;
@@ -17,6 +19,7 @@ type Props = {
     networksLoading: boolean
     onCoinChange: (symbol: string) => void
     errors?: ErrorValidator[]
+    existingImageUrl?:string
 }
 
 export const AssetForm = ({
@@ -26,10 +29,17 @@ export const AssetForm = ({
     coins,
     networks,
     networksLoading,
-    onCoinChange
+    onCoinChange,
+    existingImageUrl
 }: Props) => {
     const [form] = Form.useForm();
     const [api, contextHolder] = notification.useNotification();
+
+    useEffect(() => {
+    if (!existingImageUrl && !networksLoading) {
+        form.resetFields(['imageUrl']); 
+    }
+}, [existingImageUrl, networksLoading, form]);
     return (
         <>
             <h2 style={{ marginBottom: 20 }}>{title}</h2>
@@ -77,8 +87,13 @@ export const AssetForm = ({
                         })) ?? []}
                     />
                 </Form.Item>
-                <CustomInput type="text" name="imageUrl" placeholder="Посилання на зображення" required={false} size="large" />
-                <Input type="text" disabled value={"https://www.coingecko.com/"} />
+                <Form.Item 
+                name="imageUrl" 
+                label="Іконка активу"
+                rules={[{ required: !existingImageUrl, message: 'Завантажте іконку' }]}
+            >
+                <AssetImageUpload existingUrl={existingImageUrl} />
+            </Form.Item>
                 <Space style={{ justifyContent: "center", alignItems: "center" }}>
                     <Button htmlType="submit" style={{ marginTop: "10px" }}>
                         Створити

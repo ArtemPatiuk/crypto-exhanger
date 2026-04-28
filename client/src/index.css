@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 * {
   margin: 0;
@@ -9,28 +9,26 @@
 body {
   margin: 0;
   background-color: #141414;
-  background-attachment: fixed;
-  min-height: 100vh;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; 
 }
 
+.ant-layout-header, 
+.ant-menu-horizontal, 
+.ant-menu {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent;
+}
 
 a {
   text-decoration: none;
+  color: inherit;
 }
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px #141414 inset !important;
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #1c1c1c inset !important;
   -webkit-text-fill-color: #ffffff !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-:where(.css-dev-only-do-not-override-13gnhae).ant-modal .ant-modal-content {
-  background-color: rgba(0, 0, 0, 0.45);
-  opacity: 100%;
-}
-:where(.css-dev-only-do-not-override-36rf97).ant-modal .ant-modal-content {
-  background-color: rgba(0, 0, 0, 0.45);
-  opacity: 100%;
 }

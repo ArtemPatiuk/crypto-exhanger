@@ -1,13 +1,13 @@
 export const defaultMenu = [
-	{ label: "HOME", path: "/" },
-	{ label: "REVIEWS", path: "/reviews" },
-	{ label: "CONTACTS", path: "/contacts" },
+	{ label: "ГОЛОВНА", path: "/" },
+	{ label: "ВІДГУКИ", path: "/reviews" },
+	{ label: "КОНТАКТИ", path: "/contacts" },
 ];
 
 export const userMenu = [
-	{ label: "Cabinet", path: "/cabinet" },
+	{ label: "КАБІНЕТ", path: "/cabinet" },
 ];
 
 export const adminMenu = [
-	{ label: "Admin", path: "/admin" },
+	{ label: "АДМІН-ПАНЕЛЬ", path: "/admin" },
 ];

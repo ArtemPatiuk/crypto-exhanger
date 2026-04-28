@@ -45,11 +45,13 @@ export interface AvailableNetworkByCoin {
 		name: string;
 	}[];
 	existingNetworks: string[];
+	imageUrl?: string;
 }
 export interface CountAssets {
 	allAssets: number;
 	activeAssets: number;
 }
+///////////////////////////////////////////////////////////////////////////////
 export interface UpdateAsset {
 	id: string;
 	isActive: boolean;
@@ -65,4 +67,10 @@ export interface ProfileAsset {
 	withdrawMax: number;
 	depositDust: number;
 	coin: IAsset
+}
+
+export interface CreateAssetRequest {
+  coin: string;
+  network: string;
+  imageUrl?: string;
 }

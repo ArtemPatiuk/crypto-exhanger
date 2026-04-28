@@ -1,7 +1,0 @@
-.auth-modal .ant-modal-content {
-	border-radius: 30px;
-}
-:where(.css-dev-only-do-not-override-13gnhae).ant-modal .ant-modal-content {
-	background-color: rgba(0, 0, 0, 0.45);
-	opacity: 100%;
-}
